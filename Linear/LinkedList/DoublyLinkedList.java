@@ -1,10 +1,10 @@
 package Linear.LinkedList;
 
-public class TwoPointerLinkedList {
+public class DoublyLinkedList {
     Node head;
     Node tail;
 
-    public TwoPointerLinkedList() {
+    public DoublyLinkedList() {
         head = null;
         tail = null;
     }
@@ -167,7 +167,7 @@ public class TwoPointerLinkedList {
     }
 
     public static void main(String[] args) {
-        TwoPointerLinkedList list = new TwoPointerLinkedList();
+        DoublyLinkedList list = new DoublyLinkedList();
 
         list.addLast("1");
         list.addLast("2");
