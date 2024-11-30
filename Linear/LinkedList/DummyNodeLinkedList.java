@@ -9,8 +9,8 @@ public class DummyNodeLinkedList {
 
     // prevNode 뒤에 새 노드 추가
     public void insert(Node prevNode, String data) {
-        if (prevNode == null) {
-            return;
+        if (prevNode == null || prevNode == head && head.next == null) {
+            return;  // 더미 노드만 있는 경우 삽입 불가
         }
 
         Node newNode = new Node(data);
@@ -38,11 +38,6 @@ public class DummyNodeLinkedList {
     // 중간 노드 삭제
     public void delete(String data) {
         Node prevNode = head;
-
-        if (head.next == null) {
-            return;
-        }
-
         Node curNode = head.next;
 
         while (curNode != null) {
@@ -59,13 +54,13 @@ public class DummyNodeLinkedList {
 
     // 마지막 노드 삭제
     public void deleteLast() {
-        Node prevNode = head;
-
         if (head.next == null) {
             return;
         }
 
+        Node prevNode = head;
         Node curNode = head.next;
+
         while (curNode.next != null) {
             prevNode = curNode;
             curNode = curNode.next;
