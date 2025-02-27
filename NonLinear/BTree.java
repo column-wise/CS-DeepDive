@@ -66,7 +66,8 @@ public class BTree {
         String midAddress = current.addresses.get(midIdx);
 
         if(current == root) {
-            current.parent = new Node(null, false);
+            root = new Node(null, false);
+            current.parent = root;
         }
         Node parent = current.parent;
 
@@ -96,6 +97,84 @@ public class BTree {
     }
 
     public void delete(int key) {
+        if(root == null) return;
+        Node current = root;
+
+        while(current != null && !current.keys.contains(key)) {
+            int idx = -(Collections.binarySearch(current.keys, key) + 1);
+            current = current.children.get(idx);
+        }
+
+        if(current == null) return;
+        int idx = current.keys.indexOf(key);
+        if(current.isLeaf) {
+            current.keys.remove(idx);
+            current.addresses.remove(idx);
+            if(current.keys.size() < minKeys) rotate(current);
+        } else {    // predecessor 와 교환 후 삭제
+            Node preNode = current.children.get(idx);
+            while(!preNode.isLeaf) {
+                preNode = preNode.children.getLast();
+            }
+            current.keys.set(idx, preNode.keys.getLast());
+            current.addresses.set(idx, preNode.addresses.getLast());
+            preNode.keys.removeLast();
+            preNode.addresses.removeLast();
+            if(preNode.keys.size() < minKeys) rotate(preNode);
+        }
+    }
+
+    public void rotate(Node current) {
+        if(current == root) return;
+        Node parent = current.parent;
+        int idx = parent.children.indexOf(current);
+        Node prevSibling = null;
+        Node nextSibling = null;
+
+        if(idx != 0) {
+            prevSibling = parent.children.get(idx - 1);
+        }
+
+        if(idx != parent.children.size() - 1) {
+            nextSibling = parent.children.get(idx + 1);
+        }
+
+        if(prevSibling != null && prevSibling.keys.size() > minKeys) {
+            int prevKey = prevSibling.keys.getLast();
+            String prevAddress = prevSibling.addresses.getLast();
+            prevSibling.keys.removeLast();
+            prevSibling.addresses.removeLast();
+
+            int parentKey = parent.keys.get(idx-1);
+            String parentAddress = parent.addresses.get(idx-1);
+
+            parent.keys.set(idx-1, prevKey);
+            parent.addresses.set(idx-1, prevAddress);
+
+            current.keys.addFirst(parentKey);
+            current.addresses.addFirst(parentAddress);
+
+        } else if(nextSibling != null && nextSibling.keys.size() > minKeys) {
+            int nextKey = nextSibling.keys.getFirst();
+            String nextAddress = nextSibling.addresses.getFirst();
+            nextSibling.keys.removeFirst();
+            nextSibling.addresses.removeFirst();
+
+            int parentKey = parent.keys.get(idx);
+            String parentAddress = parent.addresses.get(idx);
+
+            parent.keys.set(idx, nextKey);
+            parent.addresses.set(idx, nextAddress);
+
+            current.keys.add(parentKey);
+            current.addresses.add(parentAddress);
+
+        } else {
+            merge(current);
+        }
+    }
+
+    public void merge(Node current) {
 
     }
 
