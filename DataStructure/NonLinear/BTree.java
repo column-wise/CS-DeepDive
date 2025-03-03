@@ -1,4 +1,4 @@
-package NonLinear;
+package DataStructure.NonLinear;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

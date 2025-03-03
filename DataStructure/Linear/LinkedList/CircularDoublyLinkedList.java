@@ -1,4 +1,4 @@
-package Linear.LinkedList;
+package DataStructure.Linear.LinkedList;
 
 public class CircularDoublyLinkedList {
     private Node head;
