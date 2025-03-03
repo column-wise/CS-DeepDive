@@ -1,4 +1,4 @@
-package DataStructure.Linear.NonLinear;
+package DataStructure.NonLinear;
 
 import java.util.*;
 
