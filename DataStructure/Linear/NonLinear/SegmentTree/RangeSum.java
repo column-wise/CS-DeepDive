@@ -1,4 +1,4 @@
-package NonLinear.SegmentTree;
+package DataStructure.Linear.NonLinear.SegmentTree;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

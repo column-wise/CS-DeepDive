@@ -1,84 +1,67 @@
-package Linear.LinkedList;
+package DataStructure.Linear.LinkedList;
 
-public class SimpleLinkedList {
+public class DummyNodeLinkedList {
     Node head;
 
-    public SimpleLinkedList() {
-        head = null;
+    public DummyNodeLinkedList () {
+        head = new Node();  // 더미 노드 생성
     }
 
     // prevNode 뒤에 새 노드 추가
     public void insert(Node prevNode, String data) {
-        if(prevNode == null){
-            return;
+        if (prevNode == null || prevNode == head && head.next == null) {
+            return;  // 더미 노드만 있는 경우 삽입 불가
         }
 
         Node newNode = new Node(data);
-
         newNode.next = prevNode.next;
         prevNode.next = newNode;
     }
 
     public void insertFirst(String data) {
         Node newNode = new Node(data);
-        newNode.next = head;
-        head = newNode;
+        newNode.next = head.next;
+        head.next = newNode;
     }
 
     // 마지막에 새 노드 삽입
     public void insertLast(String data) {
         Node newNode = new Node(data);
 
-        if(head == null) {
-            head = newNode;
-        } else {
-            Node curNode = head;
-            while(curNode.next != null) {
-                curNode = curNode.next;
-            }
-            curNode.next = newNode;
+        Node curNode = head;  // head가 항상 더미 노드를 가리키므로 head부터 시작
+        while (curNode.next != null) {
+            curNode = curNode.next;
         }
+        curNode.next = newNode;
     }
 
     // 중간 노드 삭제
     public void delete(String data) {
         Node prevNode = head;
-        if(head == null) {
-            return;
-        }
-
         Node curNode = head.next;
 
-        if(prevNode.getData().equals(data)) {
-            head = head.next;
-            prevNode.next = null;
-        } else {
-            while(curNode != null) {
-                if(curNode.getData().equals(data)) {
-                    prevNode.next = curNode.next;
-                    curNode.next = null;
-                    return;
-                } else {
-                    prevNode = curNode;
-                    curNode = curNode.next;
-                }
+        while (curNode != null) {
+            if (curNode.getData().equals(data)) {
+                prevNode.next = curNode.next;
+                curNode.next = null;
+                return;
+            } else {
+                prevNode = curNode;
+                curNode = curNode.next;
             }
         }
     }
 
     // 마지막 노드 삭제
     public void deleteLast() {
-        Node prevNode = head;
-        if(head == null) {
+        if (head.next == null) {
             return;
         }
 
-        if(prevNode.next == null) {
-            head = null;
-        }
+        Node prevNode = head;
+        Node curNode = head.next;
 
-        Node curNode = prevNode.next;
-        while(curNode.next != null) {
+        while (curNode.next != null) {
             prevNode = curNode;
             curNode = curNode.next;
         }
@@ -86,9 +69,9 @@ public class SimpleLinkedList {
     }
 
     public Node search(String data) {
-        Node curNode = head;
+        Node curNode = head.next; // 더미 다음 노드부터 탐색
 
-        while(curNode != null && !curNode.getData().equals(data)) {
+        while (curNode != null && !curNode.getData().equals(data)) {
             curNode = curNode.next;
         }
 
@@ -98,20 +81,20 @@ public class SimpleLinkedList {
     public void reverse() {
         Node prevNode = null;
         Node curNode = null;
-        Node nextNode = head;
+        Node nextNode = head.next;
 
-        while(nextNode != null) {
+        while (nextNode != null) {
             prevNode = curNode;
             curNode = nextNode;
             nextNode = nextNode.next;
             curNode.next = prevNode;
         }
-        head = curNode;
+        head.next = curNode;
     }
 
     public void printList() {
-        Node curNode = head;
-        while(curNode != null) {
+        Node curNode = head.next;  // 더미 다음 노드부터 출력
+        while (curNode != null) {
             System.out.print(curNode.getData() + " ");
             curNode = curNode.next;
         }
@@ -143,7 +126,7 @@ public class SimpleLinkedList {
     }
 
     public static void main(String[] args) {
-        SimpleLinkedList list = new SimpleLinkedList();
+        DummyNodeLinkedList list = new DummyNodeLinkedList ();
         list.insertLast("2");
         list.insertFirst("1");
         list.insertLast("4");
@@ -151,10 +134,10 @@ public class SimpleLinkedList {
         list.insert(node, "3");
         list.insertLast("5");
 
-        System.out.println("Original List: ");
+        System.out.println("Original List:");
         list.printList();
 
-        System.out.println("Reversed List: ");
+        System.out.println("Reversed List:");
         list.reverse();
         list.printList();
 
@@ -167,5 +150,3 @@ public class SimpleLinkedList {
         list.printList();
     }
 }
-
-
