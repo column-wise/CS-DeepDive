@@ -124,7 +124,10 @@ public class RangeSum {
                 System.out.println("알 수 없는 명령어입니다. (query / update / q / quit)");
             }
 
-            System.out.println(Arrays.toString(arr));
+            for(int i = 1; i < arr.length; i++) {
+                System.out.print(arr[i] + " ");
+            }
+            System.out.println();
         }
     }
 }
