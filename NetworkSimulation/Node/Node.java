@@ -3,8 +3,8 @@ package NetworkSimulation.Node;
 import NetworkSimulation.Packet.UDPPacket;
 
 public class Node {
-    String ipAddress;
-    String MACAddress;
+    protected String ipAddress;
+    protected String MACAddress;
 
     public Node(String MACAddress) {
         ipAddress = null;
