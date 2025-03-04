@@ -5,34 +5,39 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class RangeSum {
+public class RangeMax {
     static long[] arr;
     static long[] tree;
 
     public static long init(int start, int end, int node) {
         if(start == end) {
-            tree[node] = arr[start];
-            return tree[node];
+            return tree[node] = arr[start];
         }
+
         int mid = (start + end) / 2;
-        return tree[node] = init(start, mid, node * 2) + init(mid+1, end, node * 2 + 1);
+        return tree[node] = Math.max(init(start, mid, node * 2), init(mid + 1, end, node * 2 + 1));
     }
 
     public static long query(int start, int end, int left, int right, int node) {
-        if(end < left || start > right) return 0;
+        if(right < start || end < left) return Long.MIN_VALUE;
         if(left <= start && end <= right) return tree[node];
+
         int mid = (start + end) / 2;
-        return query(start, mid, left, right, node * 2) + query(mid+1, end, left, right, node * 2 + 1);
+        return Math.max(query(start, mid, left, right, node * 2), query(mid + 1, end, left, right, node * 2 + 1));
     }
 
-    public static void update(int start, int end, int node, int index, long diff) {
-        if(index < start || index > end) return;
-        tree[node] += diff;
-        if(start == end) return;
+    public static void update(int start, int end, int node, int index, long value) {
+        if(index < start || end < index) return;
+        if(start == end) {
+            tree[node] = value;
+            return;
+        }
 
         int mid = (start + end) / 2;
-        update(start, mid, node * 2, index, diff);
-        update(mid + 1, end, node * 2 + 1, index, diff);
+        update(start, mid, node * 2, index, value);
+        update(mid + 1, end, node * 2 + 1, index, value);
+
+        tree[node] = Math.max(tree[node*2], tree[node*2+1]);
     }
 
     public static void main(String[] args) throws Exception {
@@ -59,7 +64,7 @@ public class RangeSum {
         System.out.println("====================================");
         System.out.println("[사용 방법]");
         System.out.println(" 1) query left right");
-        System.out.println("     - arr[left..right] 구간 합을 출력");
+        System.out.println("     - arr[left..right] 구간 최댓값을 출력");
         System.out.println(" 2) update index newValue");
         System.out.println("     - arr[index]를 newValue로 갱신");
         System.out.println(" 3) q 또는 quit");
@@ -81,7 +86,7 @@ public class RangeSum {
                 System.out.println("프로그램을 종료합니다.");
                 break;
             }
-            // 구간 합 질의
+            // 구간 최댓값 질의
             else if(cmd.equals("query")) {
                 if(st.countTokens() < 2) {
                     System.out.println("query 명령어 사용법: query left right");
@@ -97,7 +102,7 @@ public class RangeSum {
                 }
 
                 long result = query(1, N, left, right, 1);
-                System.out.println(String.format("arr[%d..%d] 합: %d", left, right, result));
+                System.out.println(String.format("arr[%d..%d] 최댓값: %d", left, right, result));
             }
             // 값 업데이트
             else if(cmd.equals("update")) {
@@ -114,8 +119,7 @@ public class RangeSum {
                     continue;
                 }
 
-                long diff = newValue - arr[index];
-                update(1, N, 1, index, diff);
+                update(1, N, 1, index, newValue);
                 arr[index] = newValue; // 실제 배열도 갱신
                 System.out.println(String.format("arr[%d]가 %d로 업데이트 되었습니다.", index, newValue));
             }
