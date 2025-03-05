@@ -10,6 +10,7 @@ public class DHCPTest {
         DHCPServer dhcpServer = new DHCPServer("00-1A-2B-3C-4D-5E", network);
         network.addNode(dhcpServer);
 
-        Computer client = new Computer("01-2A-3B-4C-5D-6E");
+        Computer client = new Computer("01-2A-3B-4C-5D-6E", network);
+        client.discoverDHCPServer();
     }
 }

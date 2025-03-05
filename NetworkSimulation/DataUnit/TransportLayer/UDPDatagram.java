@@ -1,10 +1,10 @@
-package NetworkSimulation.Packet;
+package NetworkSimulation.DataUnit.TransportLayer;
 
-public class UDPPacket {
+public class UDPDatagram implements TransportDataUnit {
     UDPHeader udpHeader;
     String payload;
 
-    public UDPPacket(UDPHeader udpHeader, String payload) {
+    public UDPDatagram(UDPHeader udpHeader, String payload) {
         this.udpHeader = udpHeader;
         this.payload = payload;
     }

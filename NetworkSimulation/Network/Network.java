@@ -1,7 +1,7 @@
 package NetworkSimulation.Network;
 
 import NetworkSimulation.Node.Node;
-import NetworkSimulation.Packet.UDPPacket;
+import NetworkSimulation.DataUnit.TransportLayer.UDPDatagram;
 import NetworkSimulation.Util.IPUtil;
 
 import java.util.HashSet;
@@ -34,7 +34,7 @@ public class Network {
         nodes.add(node);
     }
 
-    public void broadcast(UDPPacket message) {
+    public void broadcast(UDPDatagram message) {
         for (Node node : nodes) {
             node.receive(message);
         }
