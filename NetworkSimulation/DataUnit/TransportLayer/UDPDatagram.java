@@ -1,8 +1,8 @@
 package NetworkSimulation.DataUnit.TransportLayer;
 
 public class UDPDatagram implements TransportDataUnit {
-    UDPHeader udpHeader;
-    String payload;
+    private final UDPHeader udpHeader;
+    private final String payload;
 
     public UDPDatagram(UDPHeader udpHeader, String payload) {
         this.udpHeader = udpHeader;
@@ -25,5 +25,13 @@ public class UDPDatagram implements TransportDataUnit {
             this.length = length;
             this.checksum = checksum;
         }
+    }
+
+    public UDPHeader getUDPHeader() {
+        return udpHeader;
+    }
+
+    public String getPayload() {
+        return payload;
     }
 }

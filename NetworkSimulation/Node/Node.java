@@ -1,7 +1,7 @@
 package NetworkSimulation.Node;
 
+import NetworkSimulation.DataUnit.DataUnit;
 import NetworkSimulation.Network.Network;
-import NetworkSimulation.DataUnit.TransportLayer.UDPDatagram;
 
 public class Node {
     protected String ipAddress;
@@ -14,7 +14,7 @@ public class Node {
         this.network = network;
     }
 
-    public void receive(UDPDatagram packet) {
-        System.out.println(packet.toString());
+    public void receive(DataUnit data) {
+        System.out.println(data.toString());
     }
 }

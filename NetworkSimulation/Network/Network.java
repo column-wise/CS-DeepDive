@@ -1,5 +1,7 @@
 package NetworkSimulation.Network;
 
+import NetworkSimulation.DataUnit.DataLinkLayer.EthernetFrame;
+import NetworkSimulation.DataUnit.DataUnit;
 import NetworkSimulation.Node.Node;
 import NetworkSimulation.DataUnit.TransportLayer.UDPDatagram;
 import NetworkSimulation.Util.IPUtil;
@@ -34,9 +36,13 @@ public class Network {
         nodes.add(node);
     }
 
-    public void broadcast(UDPDatagram message) {
+    public void broadcast(DataUnit data) {
+        if(!(data instanceof EthernetFrame) || ((EthernetFrame) data).getIPPacket().getProtocol() != 17) {
+            return;
+        }
+
         for (Node node : nodes) {
-            node.receive(message);
+            node.receive(data);
         }
     }
 }
