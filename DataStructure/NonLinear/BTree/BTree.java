@@ -1,4 +1,4 @@
-package DataStructure.NonLinear;
+package DataStructure.NonLinear.BTree;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
