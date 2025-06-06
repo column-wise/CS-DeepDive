@@ -6,25 +6,26 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 ## 📁 프로젝트 구조
 | 대분류               | 소분류           | 구현 항목/파일                         | 상태       |
 | ----------------- | ------------- | -------------------------------- | -------- |
-| **DataStructure** | **Linear**    |                                  | ✅ 완료     |
-|                   |               | **LinkedList**                   | ✅ 완료     |
+| **DataStructure** | **Linear**    |                                  | ✅ 완료   |
+|                   |               | **LinkedList**                   | ✅ 완료   |
 |                   |               | ├─ CircularDoublyLinkedList.java | ✅        |
 |                   |               | ├─ DoublyLinkedList.java         | ✅        |
 |                   |               | ├─ DummyNodeLinkedList.java      | ✅        |
 |                   |               | └─ SimpleLinkedList.java         | ✅        |
-|                   |               | **Stack**                        | ✅ 완료     |
+|                   |               | **Stack**                        | ✅ 완료   |
 |                   |               | ├─ ArrayStack.java               | ✅        |
 |                   |               | └─ LinkedListStack.java          | ✅        |
-|                   | **NonLinear** |                                  | ✅ 완료     |
+|                   | **NonLinear** |                                  | ✅ 완료   |
 |                   |               | **B-Tree**                       | ✅        |
-|                   |               | **SegmentTree**                  | ✅        |
+|                   |               | **Segment Tree**                 | ✅        |
 | **Algorithm**     | -             | **Dijkstra**                     | ☐ 예정     |
 |                   |               | **BellmanFord**                  | ☐ 예정     |
 | **System**        | **JVM**       | **GarbageCollector**             | ☐ 예정     |
-|                   |               | ├─ G1                            | ☐        |
-|                   |               | └─ CMS                           | ☐        |
-|                   |               | **RoundRobinScheduler**          | ☐ 예정     |
-|                   |               | **MLFQ**                         | ☐ 예정     |
+|                   |               | ├─ G1                            | ☐         |
+|                   |               | └─ CMS                           | ☐         |
+|                   | **OS**        | **Process Schedule**             | ☐ 예정     |
+|                   |               | Round-Robin                      | ☐ 예정     |
+|                   |               | MLFQ                             | ☐ 예정     |
 | **Network**       | -             | **DHCP**                         | 🛠️ 진행 중 |
 |                   |               | ├─ Discover                      | ✅      |
 |                   |               | ├─ Offer                         | ✅      |
