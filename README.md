@@ -4,23 +4,38 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 자료구조, 알고리즘, 운영체제, 네트워크, 보안, 게임이론 등 전산학 전반에 걸친 주제를 코드로 표현하며 내부 동작 원리를 심도 있게 이해하고자 합니다.
 
 ## 📁 프로젝트 구조
-| 대분류           | 소분류       | 세부 항목               | 상태       |
-| ------------- | --------- | ------------------- | -------- |
-| DataStructure | Linear    | Linked List          | ✅ 완료     |
-|               |           | Stack               | ✅ 완료     |
-|               | NonLinear | B-Tree              | ✅ 완료     |
-|               |           | Segment Tree         | ✅ 완료     |
-| Algorithm     | -         | Dijkstra            | ☐ 예정     |
-|               |           | Bellman-Ford         | ☐ 예정     |
-| System        | -         | Garbage Collector    | ☐ 예정     |
-|               |           | Round-Robin Scheduler | ☐ 예정     |
-|               |           | MLFQ                | ☐ 예정     |
-| Network       | -         | DHCP                | 🛠️ 진행 중 |
-|               |           | NAT                 | ☐ 예정     |
-| Security      | -         | RSA                 | ☐ 예정     |
-|               |           | Diffie-Hellman       | ☐ 예정     |
-|               |           | AES                 | ☐ 예정     |
-| GameTheory    | -         | Tit-for-Tat         | ☐ 예정     |
+| 대분류               | 소분류           | 구현 항목/파일                         | 상태       |
+| ----------------- | ------------- | -------------------------------- | -------- |
+| **DataStructure** | **Linear**    |                                  | ✅ 완료     |
+|                   |               | **LinkedList**                   | ✅ 완료     |
+|                   |               | ├─ CircularDoublyLinkedList.java | ✅        |
+|                   |               | ├─ DoublyLinkedList.java         | ✅        |
+|                   |               | ├─ DummyNodeLinkedList.java      | ✅        |
+|                   |               | └─ SimpleLinkedList.java         | ✅        |
+|                   |               | **Stack**                        | ✅ 완료     |
+|                   |               | ├─ ArrayStack.java               | ✅        |
+|                   |               | └─ LinkedListStack.java          | ✅        |
+|                   | **NonLinear** |                                  | ✅ 완료     |
+|                   |               | **B-Tree**                       | ✅        |
+|                   |               | **SegmentTree**                  | ✅        |
+| **Algorithm**     | -             | **Dijkstra**                     | ☐ 예정     |
+|                   |               | **BellmanFord**                  | ☐ 예정     |
+| **System**        | **JVM**       | **GarbageCollector**             | ☐ 예정     |
+|                   |               | ├─ G1                            | ☐        |
+|                   |               | └─ CMS                           | ☐        |
+|                   |               | **RoundRobinScheduler**          | ☐ 예정     |
+|                   |               | **MLFQ**                         | ☐ 예정     |
+| **Network**       | -             | **DHCP**                         | 🛠️ 진행 중 |
+|                   |               | ├─ Discover                      | ✅      |
+|                   |               | ├─ Offer                         | ✅      |
+|                   |               | ├─ Request                       | 🛠️      |
+|                   |               | └─ Acknowledge (ACK)             | 🛠️      |
+|                   |               | **NAT**                          | ☐ 예정     |
+| **Security**      | -             | **RSA**                          | ☐ 예정     |
+|                   |               | **DiffieHellman**                | ☐ 예정     |
+|                   |               | **AES**                          | ☐ 예정     |
+| **GameTheory**    | -             | **Tit-for-Tat**                  | ☐ 예정     |
+
 
 
 
