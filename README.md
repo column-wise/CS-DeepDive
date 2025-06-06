@@ -11,14 +11,14 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |               | NonLinear | B-Tree              | ✅ 완료     |
 |               |           | Segment Tree         | ✅ 완료     |
 | Algorithm     | -         | Dijkstra            | ☐ 예정     |
-|               |           | BellmanFord         | ☐ 예정     |
+|               |           | Bellman-Ford         | ☐ 예정     |
 | System        | -         | Garbage Collector    | ☐ 예정     |
 |               |           | Round-Robin Scheduler | ☐ 예정     |
 |               |           | MLFQ                | ☐ 예정     |
 | Network       | -         | DHCP                | 🛠️ 진행 중 |
 |               |           | NAT                 | ☐ 예정     |
 | Security      | -         | RSA                 | ☐ 예정     |
-|               |           | DiffieHellman       | ☐ 예정     |
+|               |           | Diffie-Hellman       | ☐ 예정     |
 |               |           | AES                 | ☐ 예정     |
 | GameTheory    | -         | Tit-for-Tat         | ☐ 예정     |
 
