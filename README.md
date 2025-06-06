@@ -6,14 +6,14 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 ## 📁 프로젝트 구조
 | 대분류           | 소분류       | 세부 항목               | 상태       |
 | ------------- | --------- | ------------------- | -------- |
-| DataStructure | Linear    | LinkedList          | ✅ 완료     |
+| DataStructure | Linear    | Linked List          | ✅ 완료     |
 |               |           | Stack               | ✅ 완료     |
 |               | NonLinear | B-Tree              | ✅ 완료     |
-|               |           | SegmentTree         | ✅ 완료     |
+|               |           | Segment Tree         | ✅ 완료     |
 | Algorithm     | -         | Dijkstra            | ☐ 예정     |
 |               |           | BellmanFord         | ☐ 예정     |
-| System        | -         | GarbageCollector    | ☐ 예정     |
-|               |           | RoundRobinScheduler | ☐ 예정     |
+| System        | -         | Garbage Collector    | ☐ 예정     |
+|               |           | Round-Robin Scheduler | ☐ 예정     |
 |               |           | MLFQ                | ☐ 예정     |
 | Network       | -         | DHCP                | 🛠️ 진행 중 |
 |               |           | NAT                 | ☐ 예정     |
