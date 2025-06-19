@@ -1,7 +1,7 @@
-package NetworkSimulation.DataUnit.NetworkLayer;
+package Network.DataUnit.NetworkLayer;
 
-import NetworkSimulation.DataUnit.DataUnit;
-import NetworkSimulation.DataUnit.TransportLayer.TransportDataUnit;
+import Network.DataUnit.DataUnit;
+import Network.DataUnit.TransportLayer.TransportDataUnit;
 
 public class IPPacket implements DataUnit {
     private final String sourceIP;

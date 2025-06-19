@@ -1,4 +1,4 @@
-package NetworkSimulation.Util;
+package Network.Util;
 
 import java.util.HashMap;
 import java.util.Map;
