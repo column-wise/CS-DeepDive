@@ -35,12 +35,13 @@ public class Network {
         nodes.add(node);
     }
 
-    public void broadcast(DataUnit data) {
+    public void broadcast(DataUnit data, Node sender) {
         if(!(data instanceof EthernetFrame) || ((EthernetFrame) data).getIPPacket().getProtocol() != 17) {
             return;
         }
 
         for (Node node : nodes) {
+            if(node.equals(sender)) continue;
             node.receive(data);
         }
     }

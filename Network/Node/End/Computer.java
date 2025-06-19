@@ -15,6 +15,20 @@ public class Computer extends Node {
         this.network = network;
     }
 
+    @Override
+    public void receive(DataUnit data) {
+        if (!(data instanceof EthernetFrame)) return;
+
+        EthernetFrame frame = (EthernetFrame) data;
+        String destinationMAC = frame.getDestinationMAC();
+
+        if (!destinationMAC.equals(this.MACAddress)) {
+            // 내 MAC 주소가 아니면 무시
+            return;
+        }
+        super.receive(data);
+    }
+
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
@@ -35,10 +49,11 @@ public class Computer extends Node {
         UDPDatagram.UDPHeader header = new UDPDatagram.UDPHeader(sourcePort, destinationPort, length, checksum);
         UDPDatagram udpDatagram = new UDPDatagram(header, payload);
 
+        // protocol 17: UDP, 6: TCP
         IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
         EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-        network.broadcast(frame);
+        network.broadcast(frame, this);
     }
 
     public static Builder builder() {

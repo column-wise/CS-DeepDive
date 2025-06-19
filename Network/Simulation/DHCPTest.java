@@ -10,14 +10,17 @@ public class DHCPTest {
         DHCPServer dhcpServer = DHCPServer.builder()
                 .ip("192.168.1.10")
                 .mac("00-1A-2B-3C-4D-5E")
-                .network(network).build();
+                .network(network)
+                .build();
         network.addNode(dhcpServer);
 
         Computer client = Computer.builder()
                 .mac("01-2A-3B-4C-5D-6E")
-                .network(network).build();
-
+                .network(network)
+                .build();
         network.addNode(client);
+
         client.discoverDHCPServer();
+        Thread.sleep(100);
     }
 }
