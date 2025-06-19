@@ -1,4 +1,4 @@
-package NetworkSimulation.DataUnit.TransportLayer;
+package Network.DataUnit.TransportLayer;
 
 public class UDPDatagram implements TransportDataUnit {
     private final UDPHeader udpHeader;

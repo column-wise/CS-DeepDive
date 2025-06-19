@@ -1,7 +1,7 @@
-package NetworkSimulation.Node;
+package Network.Node;
 
-import NetworkSimulation.DataUnit.DataUnit;
-import NetworkSimulation.Network.Network;
+import Network.DataUnit.DataUnit;
+import Network.Network.Network;
 
 public class Node {
     protected String ipAddress;

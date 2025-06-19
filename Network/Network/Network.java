@@ -1,10 +1,9 @@
-package NetworkSimulation.Network;
+package Network.Network;
 
-import NetworkSimulation.DataUnit.DataLinkLayer.EthernetFrame;
-import NetworkSimulation.DataUnit.DataUnit;
-import NetworkSimulation.Node.Node;
-import NetworkSimulation.DataUnit.TransportLayer.UDPDatagram;
-import NetworkSimulation.Util.IPUtil;
+import Network.DataUnit.DataLinkLayer.EthernetFrame;
+import Network.DataUnit.DataUnit;
+import Network.Node.Node;
+import Network.Util.IPUtil;
 
 import java.util.HashSet;
 import java.util.Set;

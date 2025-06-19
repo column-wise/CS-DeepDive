@@ -1,7 +1,7 @@
-package NetworkSimulation.DataUnit.DataLinkLayer;
+package Network.DataUnit.DataLinkLayer;
 
-import NetworkSimulation.DataUnit.DataUnit;
-import NetworkSimulation.DataUnit.NetworkLayer.IPPacket;
+import Network.DataUnit.DataUnit;
+import Network.DataUnit.NetworkLayer.IPPacket;
 
 public class EthernetFrame implements DataUnit {
     private final String destinationMAC;

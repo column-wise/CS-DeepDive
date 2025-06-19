@@ -1,11 +1,11 @@
-package NetworkSimulation.Node.End;
+package Network.Node.End;
 
-import NetworkSimulation.DataUnit.DataLinkLayer.EthernetFrame;
-import NetworkSimulation.DataUnit.DataUnit;
-import NetworkSimulation.DataUnit.NetworkLayer.IPPacket;
-import NetworkSimulation.Network.Network;
-import NetworkSimulation.Node.Node;
-import NetworkSimulation.DataUnit.TransportLayer.UDPDatagram;
+import Network.DataUnit.DataLinkLayer.EthernetFrame;
+import Network.DataUnit.DataUnit;
+import Network.DataUnit.NetworkLayer.IPPacket;
+import Network.Network.Network;
+import Network.Node.Node;
+import Network.DataUnit.TransportLayer.UDPDatagram;
 
 public class Computer extends Node {
 

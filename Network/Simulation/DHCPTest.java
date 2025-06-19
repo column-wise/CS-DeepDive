@@ -1,9 +1,8 @@
-package NetworkSimulation.Simulation;
+package Network.Simulation;
 
-import NetworkSimulation.Network.Network;
-import NetworkSimulation.Node.End.Computer;
-import NetworkSimulation.Node.End.DHCPServer;
-import NetworkSimulation.Util.IPUtil;
+import Network.Network.Network;
+import Network.Node.End.Computer;
+import Network.Node.End.DHCPServer;
 
 public class DHCPTest {
     public static void main(String[] args) throws Exception {
