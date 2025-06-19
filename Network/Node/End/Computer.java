@@ -9,17 +9,14 @@ import Network.DataUnit.TransportLayer.UDPDatagram;
 
 public class Computer extends Node {
 
-    public Computer(String MACAddress, Network network) {
-        super(MACAddress, network);
+    private Computer(String MACAddress, String ipAddress, Network network) {
+        this.MACAddress = MACAddress;
+        this.ipAddress = ipAddress;
+        this.network = network;
     }
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
-    }
-
-    @Override
-    public void receive(DataUnit data) {
-        System.out.println(data.toString());
     }
 
     public void discoverDHCPServer() {
@@ -42,5 +39,34 @@ public class Computer extends Node {
         EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
         network.broadcast(frame);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String MACAddress;
+        private String ipAddress = null;
+        private Network network;
+
+        public Builder mac(String mac) {
+            MACAddress = mac;
+            return this;
+        }
+
+        public Builder ip(String ip) {
+            ipAddress = ip;
+            return this;
+        }
+
+        public Builder network(Network network) {
+            this.network = network;
+            return this;
+        }
+
+        public Computer build() {
+            return new Computer(MACAddress, ipAddress, network);
+        }
     }
 }

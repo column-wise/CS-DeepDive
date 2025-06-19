@@ -15,15 +15,16 @@ import java.util.Map;
 
 public class DHCPServer extends Node {
 
-    private final int ipAddress;
+    private final int intIpAddress;
     private final int startIP;
     private final int endIP;
     private final long LEASE_TIME = 60000;   // 60초 후 만료
     private final Map<Integer, Long> allocatedIP;
 
-    public DHCPServer(String MACAddress, String ipAddress, Network network) throws UnknownHostException {
-        super(MACAddress, network);
-        this.ipAddress = IPUtil.ipToInt(ipAddress);
+    private DHCPServer(String MACAddress, String ipAddress, Network network) throws UnknownHostException {
+        this.MACAddress = MACAddress;
+        this.ipAddress = ipAddress;
+        intIpAddress = IPUtil.ipToInt(ipAddress);
         startIP = network.getSubnetAddress() + 1;
         endIP = (network.getSubnetAddress() | (~network.getSubnetMask())) - 1;
         allocatedIP = new HashMap<>();
@@ -37,7 +38,7 @@ public class DHCPServer extends Node {
 
     private int allocateIP() {
         for(int ip = startIP; ip <= endIP; ip++) {
-            if(ip == ipAddress) continue;
+            if(ip == intIpAddress) continue;
             if(!allocatedIP.containsKey(ip)) {
                 allocatedIP.put(ip, System.currentTimeMillis() + LEASE_TIME);
                 return ip;
@@ -57,6 +58,7 @@ public class DHCPServer extends Node {
 
     @Override
     public void receive(DataUnit data) {
+        super.receive(data);
         EthernetFrame frame = (EthernetFrame) data;
         String destinationMAC = frame.getDestinationMAC();
         String sourceMAC = frame.getSourceMAC();
@@ -100,8 +102,41 @@ public class DHCPServer extends Node {
 
         UDPDatagram.UDPHeader header = new UDPDatagram.UDPHeader(sourcePort, destinationPort, length, checksum);
         UDPDatagram datagram = new UDPDatagram(header, payload);
-        IPPacket ipPacket = new IPPacket(IPUtil.intToIp(ipAddress), "255.255.255.255", 6, datagram);
+        IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 6, datagram);
         EthernetFrame frame = new EthernetFrame("", MACAddress, 0x0800, ipPacket);
         network.broadcast(frame);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String MACAddress;
+        private String ipAddress;
+        private Network network;
+
+        public Builder ip(String ip) {
+            this.ipAddress = ip;
+            return this;
+        }
+
+        public Builder mac(String mac) {
+            this.MACAddress = mac;
+            return this;
+        }
+
+        public Builder network(Network network) {
+            this.network = network;
+            return this;
+        }
+
+        public DHCPServer build() {
+            try {
+                return new DHCPServer(MACAddress, ipAddress, network);
+            } catch (UnknownHostException e) {
+                throw new RuntimeException("Invalid IP Address: " + ipAddress, e);
+            }
+        }
     }
 }
