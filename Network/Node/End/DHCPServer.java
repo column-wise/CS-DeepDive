@@ -60,7 +60,11 @@ public class DHCPServer extends Node {
     @Override
     public void receive(DataUnit data) {
         super.receive(data);
-        EthernetFrame frame = (EthernetFrame) data;
+    }
+
+    @Override
+    protected void handleUDP(DataUnit dataUnit) {
+        EthernetFrame frame = (EthernetFrame) dataUnit;
         String destinationMAC = frame.getDestinationMAC();
         String sourceMAC = frame.getSourceMAC();
 
