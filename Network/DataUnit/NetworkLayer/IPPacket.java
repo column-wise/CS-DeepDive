@@ -18,7 +18,12 @@ public class IPPacket implements DataUnit {
 
     @Override
     public String toString() {
-        return "IPPacket [SIP=" + sourceIP + ", DIP=" + destinationIP + ", Protocol=" + protocol + ", TransportSegment=" + transportDataUnit + "]";
+        return "IPPacket {\n" +
+                "\tSource IP: " + sourceIP + "\n" +
+                "\tDestination IP: " + destinationIP + "\n" +
+                "\tProtocol: " + protocol + "\n" +
+                "\tTransportSegment: " + transportDataUnit.toString().replace("\n", "\n\t") +
+                "\n}";
     }
 
     public String getSourceIP() {
