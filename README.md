@@ -29,7 +29,7 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 | **Network**       | -             | **DHCP**                         | 🛠️ 진행 중 |
 |                   |               | ├─ Discover                      | ✅      |
 |                   |               | ├─ Offer                         | ✅      |
-|                   |               | ├─ Request                       | 🛠️      |
+|                   |               | ├─ Request                       | ✅      |
 |                   |               | └─ Acknowledge (ACK)             | 🛠️      |
 |                   |               | **NAT**                          | ☐ 예정     |
 | **Security**      | -             | **RSA**                          | ☐ 예정     |
