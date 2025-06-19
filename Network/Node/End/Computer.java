@@ -6,6 +6,9 @@ import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.Network.Network;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
+import Network.Util.PayloadParser;
+
+import java.util.Map;
 
 public class Computer extends Node {
 
@@ -16,17 +19,27 @@ public class Computer extends Node {
     }
 
     @Override
-    public void receive(DataUnit data) {
-        if (!(data instanceof EthernetFrame)) return;
-
-        EthernetFrame frame = (EthernetFrame) data;
+    protected void handleUDP(DataUnit dataUnit) {
+        EthernetFrame frame = (EthernetFrame) dataUnit;
         String destinationMAC = frame.getDestinationMAC();
+        String sourceMAC = frame.getSourceMAC();
 
-        if (!destinationMAC.equals(this.MACAddress)) {
-            // 내 MAC 주소가 아니면 무시
-            return;
+        IPPacket ipPacket = frame.getIPPacket();
+        String destinationIP = ipPacket.getDestinationIP();
+        String sourceIP = ipPacket.getSourceIP();
+
+        UDPDatagram udpDatagram = (UDPDatagram) ipPacket.getTransportDataUnit();
+        Map<String, String> payload = PayloadParser.parsePayload(udpDatagram.getPayload());
+        String dhcpMessageType = payload.get("DHCP Message Type");
+        String dhcpServerIdentifier = payload.get("DHCP Server Identifier");
+        String myIP = payload.get("Your IP");
+
+        if("255.255.255.255".equals(destinationIP)
+                && dhcpServerIdentifier != null
+                && myIP != null
+                && "DHCPOFFER".equals(dhcpMessageType)) {
+            requestDHCP(myIP);
         }
-        super.receive(data);
     }
 
     public void setIpAddress(String ipAddress) {
@@ -50,6 +63,26 @@ public class Computer extends Node {
         UDPDatagram udpDatagram = new UDPDatagram(header, payload);
 
         // protocol 17: UDP, 6: TCP
+        IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
+        EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
+
+        network.broadcast(frame, this);
+    }
+
+    private void requestDHCP(String myIP) {
+        int sourcePort = 68;
+        int destinationPort = 67;
+        int checksum = 0;
+
+        String payload = "DHCP Message Type=DHCPREQUEST" +
+                ",Client MAC=" + MACAddress +
+                ",Your IP=" + myIP;
+
+        int length = 8 + payload.length();
+
+        UDPDatagram.UDPHeader header = new UDPDatagram.UDPHeader(sourcePort, destinationPort, length, checksum);
+        UDPDatagram udpDatagram = new UDPDatagram(header, payload);
+
         IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
         EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 

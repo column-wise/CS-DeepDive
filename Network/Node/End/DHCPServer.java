@@ -26,7 +26,7 @@ public class DHCPServer extends Node {
         this.ipAddress = ipAddress;
         this.network = network;
         intIpAddress = IPUtil.ipToInt(ipAddress);
-        startIP = network.getSubnetAddress() + 1;
+        startIP = network.getSubnetAddress() + 2;   // + 1은 router 용도로
         endIP = (network.getSubnetAddress() | (~network.getSubnetMask())) - 1;
         allocatedIP = new HashMap<>();
     }
@@ -69,10 +69,6 @@ public class DHCPServer extends Node {
         String sourceMAC = frame.getSourceMAC();
 
         IPPacket ipPacket = frame.getIPPacket();
-
-        // UDP: IP 프로토콜 17
-        if(ipPacket.getProtocol() != 17) return;
-
         String destinationIP = ipPacket.getDestinationIP();
         String sourceIP = ipPacket.getSourceIP();
 
@@ -81,18 +77,21 @@ public class DHCPServer extends Node {
         String dhcpMessageType = payload.get("DHCP Message Type");
 
         // received DHCP discover
-        if(destinationMAC.equals("FF:FF:FF:FF:FF:FF")
-                && destinationIP.equals("255.255.255.255")
-                && sourceIP.equals("0.0.0.0")
-                && dhcpMessageType.equals("DHCPDISCOVER")) {
-            offerDHCP(sourceMAC);
+        if("FF:FF:FF:FF:FF:FF".equals(destinationMAC)
+                && "255.255.255.255".equals(destinationIP)
+                && "0.0.0.0".equals(sourceIP)) {
+            if("DHCPDISCOVER".equals(dhcpMessageType)) {
+                offerDHCP(sourceMAC);
+            } else if("DHCPREQUEST".equals(dhcpMessageType)) {
+                ackDHCP();
+            }
         }
     }
 
     // todo. DNS 구현 시 DNS 주소 추가
     private void offerDHCP(String clientMAC) {
         String payload = "Client MAC=" + clientMAC +
-                ",Your IP=" + findAllocatableIP() +
+                ",Your IP=" + IPUtil.intToIp(findAllocatableIP()) +
                 ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
                 ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
@@ -112,6 +111,8 @@ public class DHCPServer extends Node {
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
         network.broadcast(frame, this);
     }
+
+    private void ackDHCP() {}
 
     public static Builder builder() {
         return new Builder();
