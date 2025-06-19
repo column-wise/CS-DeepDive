@@ -24,6 +24,7 @@ public class DHCPServer extends Node {
     private DHCPServer(String MACAddress, String ipAddress, Network network) throws UnknownHostException {
         this.MACAddress = MACAddress;
         this.ipAddress = ipAddress;
+        this.network = network;
         intIpAddress = IPUtil.ipToInt(ipAddress);
         startIP = network.getSubnetAddress() + 1;
         endIP = (network.getSubnetAddress() | (~network.getSubnetMask())) - 1;
@@ -47,7 +48,7 @@ public class DHCPServer extends Node {
         return -1;
     }
 
-    // TODO.
+    // TODO. 회수한 ip 관리 로직 추가
     private void cleanExpiredIPs() {
         for(Map.Entry<Integer, Long> entry : allocatedIP.entrySet()) {
             if(entry.getValue() < System.currentTimeMillis()) {
@@ -84,6 +85,7 @@ public class DHCPServer extends Node {
         }
     }
 
+    // todo. DNS 구현 시 DNS 주소 추가
     private void offerDHCP(String clientMAC) {
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + findAllocatableIP() +
@@ -102,9 +104,9 @@ public class DHCPServer extends Node {
 
         UDPDatagram.UDPHeader header = new UDPDatagram.UDPHeader(sourcePort, destinationPort, length, checksum);
         UDPDatagram datagram = new UDPDatagram(header, payload);
-        IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 6, datagram);
-        EthernetFrame frame = new EthernetFrame("", MACAddress, 0x0800, ipPacket);
-        network.broadcast(frame);
+        IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 17, datagram);
+        EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
+        network.broadcast(frame, this);
     }
 
     public static Builder builder() {
