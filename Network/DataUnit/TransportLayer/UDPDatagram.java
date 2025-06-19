@@ -9,8 +9,15 @@ public class UDPDatagram implements TransportDataUnit {
         this.payload = payload;
     }
 
+    @Override
     public String toString() {
-        return payload;
+        return "UDPDatagram {\n" +
+                "\tSource Port: " + udpHeader.sourcePort + "\n" +
+                "\tDestination Port: " + udpHeader.destinationPort + "\n" +
+                "\tLength: " + udpHeader.length + "\n" +
+                "\tChecksum: " + udpHeader.checksum + "\n" +
+                "\tPayload: " + payload.replace(",", ",\n\t\t") +
+                "\n}";
     }
 
     public static class UDPHeader {

@@ -18,7 +18,12 @@ public class EthernetFrame implements DataUnit {
 
     @Override
     public String toString() {
-        return "EthernetFrame [DA=" + destinationMAC + ", SA=" + sourceMAC + ", EtherType=" + etherType + ", IPPacket=" + ipPacket + "]";
+        return "EthernetFrame {\n" +
+                "\tDestination MAC: " + destinationMAC + "\n" +
+                "\tSource MAC: " + sourceMAC + "\n" +
+                "\tEtherType: " + etherType + "\n" +
+                "\t" + ipPacket.toString().replace("\n", "\n\t") + // IPPacket 내부도 들여쓰기
+                "\n}";
     }
 
     public String getDestinationMAC() {
