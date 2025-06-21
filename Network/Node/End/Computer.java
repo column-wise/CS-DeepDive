@@ -49,7 +49,10 @@ public class Computer extends Node {
     }
 
     public void setIpAddress(String ipAddress) {
+        System.out.println(this);
+        System.out.println("IP Setting...");
         this.ipAddress = ipAddress;
+        System.out.println(this);
     }
 
     public void discoverDHCPServer() {
@@ -126,7 +129,10 @@ public class Computer extends Node {
         }
 
         public Computer build() {
-            return new Computer(MACAddress, ipAddress, network);
+            Computer computer = new Computer(MACAddress, ipAddress, network);
+            System.out.println(computer);
+            System.out.println("Added to Network\n");
+            return computer;
         }
     }
 }
