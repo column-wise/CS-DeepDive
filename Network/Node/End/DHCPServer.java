@@ -115,7 +115,35 @@ public class DHCPServer extends Node {
         network.broadcast(frame, this);
     }
 
-    private void ackDHCP() {}
+    private void ackDHCP(Map<String, String> receivedPayload) {
+        String clientMAC = receivedPayload.get("Client MAC");
+        String flags = receivedPayload.get("Flags");
+        String yourIP = receivedPayload.get("Requested IP Address");
+        String payload = "Client MAC=" + clientMAC +
+                ",Your IP=" + yourIP +
+                ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+                ",DNS=" + "DNS 서버 IP 주소" +
+                ",IP Lease Time=" + LEASE_TIME +
+                ",DHCP Message Type=" + DHCPMessageType.DHCPACK +
+                ",DHCP Server Identifier=" + ipAddress;
+
+        int sourcePort = 67;
+        int destinationPort = 68;
+        int length = payload.length() + 8;
+        int checksum = 0;
+
+        UDPDatagram.UDPHeader header = new UDPDatagram.UDPHeader(sourcePort, destinationPort, length, checksum);
+        UDPDatagram datagram = new UDPDatagram(header, payload);
+        IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 17, datagram);
+        EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
+
+        if(flags.equals("1")) {
+            network.broadcast(frame, this);
+        } else if(flags.equals("0")) {
+            // unicast
+        }
+    }
 
     public static Builder builder() {
         return new Builder();
