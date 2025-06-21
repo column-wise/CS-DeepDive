@@ -6,7 +6,11 @@ import Network.Node.End.DHCPServer;
 
 public class DHCPTest {
     public static void main(String[] args) throws Exception {
-        Subnet subnet = new Subnet("192.168.1.0", "255.255.255.0");
+        Subnet subnet = Subnet.builder()
+                .subnetAddress("192.168.1.0")
+                .subnetMask("255.255.255.0")
+                .build();
+
         DHCPServer dhcpServer = DHCPServer.builder()
                 .ip("192.168.1.10")
                 .mac("00-1A-2B-3C-4D-5E")

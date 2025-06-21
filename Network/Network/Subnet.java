@@ -5,22 +5,20 @@ import Network.DataUnit.DataUnit;
 import Network.Node.Node;
 import Network.Util.IPUtil;
 
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Subnet {
     private int subnetAddress;
     private int subnetMask;
+    private boolean isPrivate;
     Set<Node> nodes = new HashSet<Node>();
 
-    public Subnet(String subnetAddress, String subnetMask) {
-        try {
-            this.subnetAddress = IPUtil.ipToInt(subnetAddress);
-            this.subnetMask = IPUtil.ipToInt(subnetMask);
-        } catch (Exception e) {
-            this.subnetAddress = 0;
-            this.subnetMask = 0;
-        }
+    private Subnet(int subnetAddress, int subnetMask, boolean isPrivate) {
+        this.subnetAddress = subnetAddress;
+        this.subnetMask = subnetMask;
+        this.isPrivate = isPrivate;
     }
 
     public int getSubnetAddress() {
@@ -43,6 +41,44 @@ public class Subnet {
         for (Node node : nodes) {
             if(node.equals(sender)) continue;
             node.receive(data);
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private int subnetAddress;
+        private int subnetMask;
+        private boolean isPrivate = false;
+
+        public Builder subnetAddress(String subnetAddress) {
+            try {
+                this.subnetAddress = IPUtil.ipToInt(subnetAddress);
+            } catch (UnknownHostException e) {
+                this.subnetAddress = 0;
+            }
+
+            return this;
+        }
+
+        public Builder subnetMask(String subnetMask) {
+            try {
+                this.subnetMask = IPUtil.ipToInt(subnetMask);
+            } catch (UnknownHostException e) {
+                this.subnetMask = 0;
+            }
+            return this;
+        }
+
+        public Builder isPrivate(boolean isPrivate) {
+            this.isPrivate = isPrivate;
+            return this;
+        }
+
+        public Subnet build() {
+            return new Subnet(subnetAddress, subnetMask, isPrivate);
         }
     }
 }
