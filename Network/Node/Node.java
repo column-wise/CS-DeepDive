@@ -67,4 +67,9 @@ public abstract class Node {
     protected void handleTCP(DataUnit dataUnit) {
 
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + " MAC: " + MACAddress + " ,IP Address: " + ipAddress;
+    }
 }
