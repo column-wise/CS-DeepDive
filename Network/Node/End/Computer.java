@@ -79,10 +79,16 @@ public class Computer extends Node {
         int sourcePort = 68;
         int destinationPort = 67;
         int checksum = 0;
+        
+        // DHCP 서버로부터 offer 받은 IP가 유효한지 확인하기 위해 ARP Probe 과정을 거치기도 함
+        // 해당 IP로 ARP 요청을 보내보고, 응답이 없으면 사용 가능하다고 판단
 
         String payload = "DHCP Message Type=DHCPREQUEST" +
                 ",Client MAC=" + MACAddress +
-                ",Your IP=" + myIP;
+                ",Requested IP Address=" + myIP +
+                ",Flags=1";
+        // Flags=0 -> DHCP ACK 응답을 유니캐스트로 보내주세요
+        // Flags=1 -> 브로드캐스트로 보내주세요
 
         int length = 8 + payload.length();
 
