@@ -1,5 +1,6 @@
 package Network.Node.End;
 
+import Network.Constants.DHCPMessageType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
@@ -30,15 +31,20 @@ public class Computer extends Node {
 
         UDPDatagram udpDatagram = (UDPDatagram) ipPacket.getTransportDataUnit();
         Map<String, String> payload = PayloadParser.parsePayload(udpDatagram.getPayload());
-        String dhcpMessageType = payload.get("DHCP Message Type");
+        String dhcpMessageTypeStr = payload.get("DHCP Message Type");
         String dhcpServerIdentifier = payload.get("DHCP Server Identifier");
         String myIP = payload.get("Your IP");
 
         if("255.255.255.255".equals(destinationIP)
                 && dhcpServerIdentifier != null
-                && myIP != null
-                && "DHCPOFFER".equals(dhcpMessageType)) {
-            requestDHCP(myIP);
+                && myIP != null) {
+            DHCPMessageType.from(dhcpMessageTypeStr).ifPresent(type -> {
+                switch (type) {
+                    case DHCPOFFER -> requestDHCP(myIP);
+                    case DHCPACK  -> setIpAddress(myIP);
+                    case DHCPNACK -> discoverDHCPServer();
+                }
+            });
         }
     }
 
@@ -54,7 +60,7 @@ public class Computer extends Node {
         // 간단한 시뮬레이션에서는 checksum 계산을 생략하고 0으로 설정
         int checksum = 0;
 
-        String payload = "DHCP Message Type=DHCPDISCOVER" +
+        String payload = "DHCP Message Type=" + DHCPMessageType.DHCPDISCOVER +
                 ",Client MAC=" + MACAddress;
 
         int length = 8 + payload.length();
