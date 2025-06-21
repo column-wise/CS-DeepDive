@@ -1,4 +1,4 @@
-package Network.Simulation;
+package Network.Simulation.DHCP;
 
 import Network.Network.Network;
 import Network.Node.End.Computer;
