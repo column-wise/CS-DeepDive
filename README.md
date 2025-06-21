@@ -26,11 +26,11 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                   | **OS**        | **Process Schedule**             | ☐ 예정     |
 |                   |               | Round-Robin                      | ☐ 예정     |
 |                   |               | MLFQ                             | ☐ 예정     |
-| **Network**       | -             | **DHCP**                         | 🛠️ 진행 중 |
+| **Network**       | -             | **DHCP**                         | ✅ |
 |                   |               | ├─ Discover                      | ✅      |
 |                   |               | ├─ Offer                         | ✅      |
 |                   |               | ├─ Request                       | ✅      |
-|                   |               | └─ Acknowledge (ACK)             | 🛠️      |
+|                   |               | └─ Acknowledge (ACK)             | ✅      |
 |                   |               | **NAT**                          | ☐ 예정     |
 | **Security**      | -             | **RSA**                          | ☐ 예정     |
 |                   |               | **DiffieHellman**                | ☐ 예정     |
