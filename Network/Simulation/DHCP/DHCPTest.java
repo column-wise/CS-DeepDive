@@ -14,13 +14,13 @@ public class DHCPTest {
         DHCPServer dhcpServer = DHCPServer.builder()
                 .ip("192.168.1.10")
                 .mac("00-1A-2B-3C-4D-5E")
-                .network(subnet)
+                .subnet(subnet)
                 .build();
         subnet.addNode(dhcpServer);
 
         Computer client = Computer.builder()
                 .mac("01-2A-3B-4C-5D-6E")
-                .network(subnet)
+                .subnet(subnet)
                 .build();
         subnet.addNode(client);
 

@@ -164,7 +164,7 @@ public class DHCPServer extends Node {
             return this;
         }
 
-        public Builder network(Subnet subnet) {
+        public Builder subnet(Subnet subnet) {
             this.subnet = subnet;
             return this;
         }
