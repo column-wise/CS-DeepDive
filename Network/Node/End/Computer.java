@@ -4,7 +4,7 @@ import Network.Constants.DHCPMessageType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
-import Network.Network.Network;
+import Network.Network.Subnet;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
 import Network.Util.PayloadParser;
@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class Computer extends Node {
 
-    private Computer(String MACAddress, String ipAddress, Network network) {
+    private Computer(String MACAddress, String ipAddress, Subnet subnet) {
         this.MACAddress = MACAddress;
         this.ipAddress = ipAddress;
-        this.network = network;
+        this.subnet = subnet;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class Computer extends Node {
         IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
         EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-        network.broadcast(frame, this);
+        subnet.broadcast(frame, this);
     }
 
     private void requestDHCP(String myIP) {
@@ -101,7 +101,7 @@ public class Computer extends Node {
         IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
         EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-        network.broadcast(frame, this);
+        subnet.broadcast(frame, this);
     }
 
     public static Builder builder() {
@@ -111,7 +111,7 @@ public class Computer extends Node {
     public static class Builder {
         private String MACAddress;
         private String ipAddress = null;
-        private Network network;
+        private Subnet subnet;
 
         public Builder mac(String mac) {
             MACAddress = mac;
@@ -123,13 +123,13 @@ public class Computer extends Node {
             return this;
         }
 
-        public Builder network(Network network) {
-            this.network = network;
+        public Builder network(Subnet subnet) {
+            this.subnet = subnet;
             return this;
         }
 
         public Computer build() {
-            Computer computer = new Computer(MACAddress, ipAddress, network);
+            Computer computer = new Computer(MACAddress, ipAddress, subnet);
             System.out.println(computer);
             System.out.println("Added to Network\n");
             return computer;

@@ -8,12 +8,12 @@ import Network.Util.IPUtil;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Network {
+public class Subnet {
     private int subnetAddress;
     private int subnetMask;
     Set<Node> nodes = new HashSet<Node>();
 
-    public Network(String subnetAddress, String subnetMask) {
+    public Subnet(String subnetAddress, String subnetMask) {
         try {
             this.subnetAddress = IPUtil.ipToInt(subnetAddress);
             this.subnetMask = IPUtil.ipToInt(subnetMask);

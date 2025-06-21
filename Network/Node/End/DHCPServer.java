@@ -4,7 +4,7 @@ import Network.Constants.DHCPMessageType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
-import Network.Network.Network;
+import Network.Network.Subnet;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
 import Network.Util.IPUtil;
@@ -22,13 +22,13 @@ public class DHCPServer extends Node {
     private final long LEASE_TIME = 60000;   // 60초 후 만료
     private final Map<Integer, Long> allocatedIP;
 
-    private DHCPServer(String MACAddress, String ipAddress, Network network) throws UnknownHostException {
+    private DHCPServer(String MACAddress, String ipAddress, Subnet subnet) throws UnknownHostException {
         this.MACAddress = MACAddress;
         this.ipAddress = ipAddress;
-        this.network = network;
+        this.subnet = subnet;
         intIpAddress = IPUtil.ipToInt(ipAddress);
-        startIP = network.getSubnetAddress() + 2;   // + 1은 router 용도로
-        endIP = (network.getSubnetAddress() | (~network.getSubnetMask())) - 1;
+        startIP = subnet.getSubnetAddress() + 2;   // + 1은 router 용도로
+        endIP = (subnet.getSubnetAddress() | (~subnet.getSubnetMask())) - 1;
         allocatedIP = new HashMap<>();
     }
 
@@ -95,8 +95,8 @@ public class DHCPServer extends Node {
         String clientMAC = receivedPayload.get("Client MAC");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + IPUtil.intToIp(findAllocatableIP()) +
-                ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(subnet.getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(subnet.getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPOFFER +
@@ -112,7 +112,7 @@ public class DHCPServer extends Node {
         UDPDatagram datagram = new UDPDatagram(header, payload);
         IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 17, datagram);
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
-        network.broadcast(frame, this);
+        subnet.broadcast(frame, this);
     }
 
     private void ackDHCP(Map<String, String> receivedPayload) {
@@ -121,8 +121,8 @@ public class DHCPServer extends Node {
         String yourIP = receivedPayload.get("Requested IP Address");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + yourIP +
-                ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(subnet.getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(subnet.getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPACK +
@@ -139,7 +139,7 @@ public class DHCPServer extends Node {
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
 
         if(flags.equals("1")) {
-            network.broadcast(frame, this);
+            subnet.broadcast(frame, this);
         } else if(flags.equals("0")) {
             // unicast
         }
@@ -152,7 +152,7 @@ public class DHCPServer extends Node {
     public static class Builder {
         private String MACAddress;
         private String ipAddress;
-        private Network network;
+        private Subnet subnet;
 
         public Builder ip(String ip) {
             this.ipAddress = ip;
@@ -164,14 +164,14 @@ public class DHCPServer extends Node {
             return this;
         }
 
-        public Builder network(Network network) {
-            this.network = network;
+        public Builder network(Subnet subnet) {
+            this.subnet = subnet;
             return this;
         }
 
         public DHCPServer build() {
             try {
-                return new DHCPServer(MACAddress, ipAddress, network);
+                return new DHCPServer(MACAddress, ipAddress, subnet);
             } catch (UnknownHostException e) {
                 throw new RuntimeException("Invalid IP Address: " + ipAddress, e);
             }

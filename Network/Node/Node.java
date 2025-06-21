@@ -3,14 +3,13 @@ package Network.Node;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
-import Network.DataUnit.TransportLayer.TransportDataUnit;
-import Network.Network.Network;
+import Network.Network.Subnet;
 import Network.Util.IPUtil;
 
 public abstract class Node {
     protected String ipAddress;
     protected String MACAddress;
-    protected Network network;
+    protected Subnet subnet;
 
     public void receive(DataUnit data) {
         System.out.println(getClass().getName() + " " + ipAddress + " received\n" + data + "\n");
@@ -51,8 +50,8 @@ public abstract class Node {
     private boolean isSubnetBroadcast(String destIP) {
         try {
             int dest = IPUtil.ipToInt(destIP);
-            int subnetAddr = network.getSubnetAddress();
-            int subnetMask = network.getSubnetMask();
+            int subnetAddr = subnet.getSubnetAddress();
+            int subnetMask = subnet.getSubnetMask();
             int broadcast = subnetAddr | (~subnetMask);
             return dest == broadcast;
         } catch (Exception e) {

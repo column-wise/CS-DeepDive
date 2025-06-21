@@ -80,7 +80,7 @@ public void discoverDHCPServer() {
 	IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
 	EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-	network.broadcast(frame, this);
+	subnet.broadcast(frame, this);
 }
 ```
 
@@ -100,8 +100,8 @@ private void offerDHCP(Map<String, String> receivedPayload) {
 	String clientMAC = receivedPayload.get("Client MAC");
 	String payload = "Client MAC=" + clientMAC +
 			",Your IP=" + IPUtil.intToIp(findAllocatableIP()) +
-			",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
-			",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+			",Subnet Mask=" + IPUtil.intToIp(subnet.getSubnetMask()) +
+			",Router=" + IPUtil.intToIp(subnet.getSubnetAddress()+1) +
 			",DNS=" + "DNS 서버 IP 주소" +
 			",IP Lease Time=" + LEASE_TIME +
 			",DHCP Message Type=" + DHCPMessageType.DHCPOFFER +
@@ -117,7 +117,7 @@ private void offerDHCP(Map<String, String> receivedPayload) {
 	UDPDatagram datagram = new UDPDatagram(header, payload);
 	IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 17, datagram);
 	EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
-	network.broadcast(frame, this);
+	subnet.broadcast(frame, this);
 }
 ```
 
@@ -150,7 +150,7 @@ private void requestDHCP(String myIP) {
 	IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
 	EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-	network.broadcast(frame, this);
+	subnet.broadcast(frame, this);
 }
 ```
 
@@ -164,8 +164,8 @@ private void ackDHCP(Map<String, String> receivedPayload) {
         String yourIP = receivedPayload.get("Requested IP Address");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + yourIP +
-                ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(subnet.getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(subnet.getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPACK +
@@ -182,7 +182,7 @@ private void ackDHCP(Map<String, String> receivedPayload) {
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
 
         if(flags.equals("1")) {
-            network.broadcast(frame, this);
+            subnet.broadcast(frame, this);
         } else if(flags.equals("0")) {
             // unicast
         }
