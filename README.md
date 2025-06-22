@@ -15,23 +15,23 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                   |               | **Stack**                        | ✅ 완료   |
 |                   |               | ├─ ArrayStack.java               | ✅        |
 |                   |               | └─ LinkedListStack.java          | ✅        |
-|                   | **NonLinear** |                                  | ✅ 완료   |
-|                   |               | **B-Tree**                       | ✅        |
-|                   |               | **Segment Tree**                 | ✅        |
+|                   | **NonLinear** |                                  | ✅ 완료    |
+|                   |               | **B-Tree**                       | ✅         |
+|                   |               | **Segment Tree**                 | ✅         |
 | **Algorithm**     | -             | **Dijkstra**                     | ☐ 예정     |
 |                   |               | **BellmanFord**                  | ☐ 예정     |
 | **System**        | **JVM**       | **GarbageCollector**             | ☐ 예정     |
-|                   |               | ├─ G1                            | ☐         |
-|                   |               | └─ CMS                           | ☐         |
+|                   |               | ├─ G1                            | ☐          |
+|                   |               | └─ CMS                           | ☐          |
 |                   | **OS**        | **Process Schedule**             | ☐ 예정     |
 |                   |               | Round-Robin                      | ☐ 예정     |
 |                   |               | MLFQ                             | ☐ 예정     |
-| **Network**       | -             | **DHCP**                         | ✅ |
-|                   |               | ├─ Discover                      | ✅      |
-|                   |               | ├─ Offer                         | ✅      |
-|                   |               | ├─ Request                       | ✅      |
-|                   |               | └─ Acknowledge (ACK)             | ✅      |
-|                   |               | **NAT**                          | ☐ 예정     |
+| **Network**       | -             | **DHCP**                         | ✅         |
+|                   |               | ├─ Discover                      | ✅         |
+|                   |               | ├─ Offer                         | ✅         |
+|                   |               | ├─ Request                       | ✅         |
+|                   |               | └─ Acknowledge (ACK)             | ✅         |
+|                   |               | **NAT**                          | 🔧         |
 | **Security**      | -             | **RSA**                          | ☐ 예정     |
 |                   |               | **DiffieHellman**                | ☐ 예정     |
 |                   |               | **AES**                          | ☐ 예정     |
