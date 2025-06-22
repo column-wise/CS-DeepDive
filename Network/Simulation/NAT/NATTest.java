@@ -1,5 +1,7 @@
 package Network.Simulation.NAT;
 
+import Network.Constants.HTTPMethodType;
+import Network.DataUnit.TransportLayer.TCPSegment;
 import Network.Network.Internet;
 import Network.Network.Subnet;
 import Network.Node.Core.Router;
@@ -74,5 +76,7 @@ public class NATTest {
 		privateNetwork.setGateway(router);
 
 		client.discoverDHCPServer();
+
+		client.sendHttpRequest(HTTPMethodType.GET, "www.google.com");
 	}
 }
