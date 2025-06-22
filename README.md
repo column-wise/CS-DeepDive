@@ -31,6 +31,7 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                   |               | ├─ Offer                         | ✅         |
 |                   |               | ├─ Request                       | ✅         |
 |                   |               | └─ Acknowledge (ACK)             | ✅         |
+|                   |               | **TCP**                          | 🔧         |
 |                   |               | **NAT**                          | 🔧         |
 | **Security**      | -             | **RSA**                          | ☐ 예정     |
 |                   |               | **DiffieHellman**                | ☐ 예정     |
