@@ -12,26 +12,37 @@ public abstract class Node {
     protected Subnet subnet;
 
     public void receive(DataUnit data) {
-        System.out.println(getClass().getName() + " " + ipAddress + " received\n" + data + "\n");
-
+        // L2 계층: EthernetFrame 여부 파악 및 MAC 체크
         IPPacket ipPacket = null;
+        boolean destinedToMe = false;
 
-        // L2 계층: EthernetFrame 처리
         if (data instanceof EthernetFrame frame) {
-            if (!isDestinedToMeMAC(frame.getDestinationMAC())) return;
-            ipPacket = frame.getIPPacket();
+            destinedToMe = isDestinedToMeMAC(frame.getDestinationMAC());
+            if (destinedToMe) {
+                ipPacket = frame.getIPPacket();
+                // L3 IP 체크
+                destinedToMe = isDestinedToMeIP(ipPacket.getDestinationIP());
+            }
         } else if (data instanceof IPPacket packet) {
-            ipPacket = packet;
-        } else {
+            destinedToMe = isDestinedToMeIP(packet.getDestinationIP());
+            if (destinedToMe) {
+                ipPacket = packet;
+            }
+        }
+
+        // 간단 로그: 일단 받은 사실만 찍고, 대상 아니면 리턴
+        System.out.println(getClass().getName() + " " + ipAddress + " received a packet"
+                + (destinedToMe ? "" : " (not for me)") + ".\n");
+        if (!destinedToMe) {
             return;
         }
 
-        // L3 계층: IP 확인
-        if (!isDestinedToMeIP(ipPacket.getDestinationIP())) return;
+        // 상세 로그: 실제 나에게 온 패킷만 data 내용까지 출력
+        System.out.println(data + "\n");
 
         // L4 계층: 프로토콜 분기
         switch (ipPacket.getProtocol()) {
-            case 6 -> handleTCP(data);
+            case 6  -> handleTCP(data);
             case 17 -> handleUDP(data);
             default -> System.out.println("Unknown protocol: " + ipPacket.getProtocol());
         }
