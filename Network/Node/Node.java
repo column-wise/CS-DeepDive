@@ -71,4 +71,16 @@ public abstract class Node {
     public String toString() {
         return getClass().getName() + " MAC: " + MACAddress + " ,IP Address: " + ipAddress;
     }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public String getMACAddress() {
+        return MACAddress;
+    }
+
+    public Subnet getSubnet() {
+        return subnet;
+    }
 }
