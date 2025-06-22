@@ -25,6 +25,5 @@ public class DHCPTest {
         subnet.addNode(client);
 
         client.discoverDHCPServer();
-        Thread.sleep(100);
     }
 }
