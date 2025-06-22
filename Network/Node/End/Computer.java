@@ -1,6 +1,7 @@
 package Network.Node.End;
 
 import Network.Constants.DHCPMessageType;
+import Network.Constants.HTTPMethodType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class Computer extends Node {
 
-    private Computer(String MACAddress, String ipAddress, Subnet subnet) {
+    protected Computer(String MACAddress, String ipAddress, Subnet subnet) {
         this.MACAddress = MACAddress;
         this.ipAddress = ipAddress;
         this.subnet = subnet;
@@ -104,30 +105,40 @@ public class Computer extends Node {
         subnet.broadcast(frame, this);
     }
 
+    @Override
+    protected void sendTCP(String destIP, int destPort, DataUnit dataUnit) {
+
+    }
+
+    @Override
+    protected void establishTCP(String destIP, int destPort) {
+
+    }
+
+    @Override
+    protected void sendUDP(String destIP, int destPort, DataUnit dataUnit) {
+
+    }
+
+    public void sendHttpRequest(HTTPMethodType method, String url) {
+
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
-    public static class Builder {
+    public static class Builder extends Node.Builder<Builder>{
         private String MACAddress;
         private String ipAddress = null;
         private Subnet subnet;
 
-        public Builder mac(String mac) {
-            MACAddress = mac;
+        @Override
+        protected Builder self() {
             return this;
         }
 
-        public Builder ip(String ip) {
-            ipAddress = ip;
-            return this;
-        }
-
-        public Builder subnet(Subnet subnet) {
-            this.subnet = subnet;
-            return this;
-        }
-
+        @Override
         public Computer build() {
             Computer computer = new Computer(MACAddress, ipAddress, subnet);
             System.out.println(computer);
