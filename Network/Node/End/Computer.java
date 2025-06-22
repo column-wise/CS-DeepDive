@@ -8,11 +8,13 @@ import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.Network.Subnet;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
+import Network.Node.TCPHandler;
+import Network.Node.UDPHandler;
 import Network.Util.PayloadParser;
 
 import java.util.Map;
 
-public class Computer extends Node {
+public class Computer extends Node implements TCPHandler, UDPHandler {
 
     protected Computer(String MACAddress, String ipAddress, Subnet subnet) {
         this.MACAddress = MACAddress;
@@ -21,7 +23,7 @@ public class Computer extends Node {
     }
 
     @Override
-    protected void handleUDP(DataUnit dataUnit) {
+    public void handleUDP(DataUnit dataUnit) {
         EthernetFrame frame = (EthernetFrame) dataUnit;
         String destinationMAC = frame.getDestinationMAC();
         String sourceMAC = frame.getSourceMAC();
@@ -106,17 +108,32 @@ public class Computer extends Node {
     }
 
     @Override
-    protected void sendTCP(String destIP, int destPort, DataUnit dataUnit) {
+    public void sendTCP(String destIP, int destPort, DataUnit dataUnit) {
 
     }
 
     @Override
-    protected void establishTCP(String destIP, int destPort) {
+    public void establishTCP(String destIP, int destPort) {
+        // SYN 패킷 전송
+        // SYN + ACK 올 때까지 대기
+        // ACK 전송
+    }
+
+    @Override
+    public void closeTCP(String destIP, int destPort) {
+        // FIN 전송
+        // ACK 대기
+        // FIN 대기
+        // ACK 전송
+    }
+
+    @Override
+    public void handleTCP(DataUnit data) {
 
     }
 
     @Override
-    protected void sendUDP(String destIP, int destPort, DataUnit dataUnit) {
+    public void sendUDP(String destIP, int destPort, DataUnit dataUnit) {
 
     }
 
@@ -129,9 +146,6 @@ public class Computer extends Node {
     }
 
     public static class Builder extends Node.Builder<Builder>{
-        private String MACAddress;
-        private String ipAddress = null;
-        private Subnet subnet;
 
         @Override
         protected Builder self() {
