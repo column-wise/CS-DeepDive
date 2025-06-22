@@ -1,7 +1,6 @@
 package Network.Simulation.NAT;
 
 import Network.Constants.HTTPMethodType;
-import Network.DataUnit.TransportLayer.TCPSegment;
 import Network.Network.Internet;
 import Network.Network.Subnet;
 import Network.Node.Core.Router;
