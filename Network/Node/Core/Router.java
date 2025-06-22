@@ -1,5 +1,6 @@
 package Network.Node.Core;
 
+import Network.DataUnit.DataUnit;
 import Network.Network.Subnet;
 import Network.Node.Node;
 
@@ -22,6 +23,16 @@ public class Router extends Node {
 	public Router(String MACAddress) {
 		this();
 		this.MACAddress = MACAddress;
+	}
+
+	@Override
+	protected void handleTCP(DataUnit data) {
+
+	}
+
+	@Override
+	protected void handleUDP(DataUnit data) {
+
 	}
 
 	public static class Interface {
