@@ -7,6 +7,7 @@ import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.Network.Subnet;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
+import Network.Node.UDPHandler;
 import Network.Util.IPUtil;
 import Network.Util.PayloadParser;
 
@@ -14,7 +15,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DHCPServer extends Node {
+public class DHCPServer extends Node implements UDPHandler {
 
     private final int intIpAddress;
     private final int startIP;
@@ -64,7 +65,12 @@ public class DHCPServer extends Node {
     }
 
     @Override
-    protected void handleUDP(DataUnit dataUnit) {
+    public void sendUDP(String destIP, int destPort, DataUnit data) {
+
+    }
+
+    @Override
+    public void handleUDP(DataUnit dataUnit) {
         EthernetFrame frame = (EthernetFrame) dataUnit;
         String destinationMAC = frame.getDestinationMAC();
         String sourceMAC = frame.getSourceMAC();
