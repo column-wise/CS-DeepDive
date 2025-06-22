@@ -49,7 +49,7 @@ public class Subnet {
         }
     }
 
-    public void sendTo(DataUnit data) {
+    public void send(DataUnit data) {
         if(!(data instanceof EthernetFrame)) return;
         EthernetFrame frame = (EthernetFrame) data;
         IPPacket packet = frame.getIPPacket();
