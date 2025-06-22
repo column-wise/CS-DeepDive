@@ -43,8 +43,20 @@ public abstract class Node {
 
         // L4 계층: 프로토콜 분기
         switch (ipPacket.getProtocol()) {
-            case 6  -> handleTCP(data);
-            case 17 -> handleUDP(data);
+            case 6 -> {
+                if (this instanceof TCPHandler tcpHandler) {
+                    tcpHandler.handleTCP(data);
+                } else {
+                    System.out.println("TCP not supported by this node");
+                }
+            }
+            case 17 -> {
+                if (this instanceof UDPHandler udpHandler) {
+                    udpHandler.handleUDP(data);
+                } else {
+                    System.out.println("UDP not supported by this node");
+                }
+            }
             default -> System.out.println("Unknown protocol: " + ipPacket.getProtocol());
         }
     }
@@ -70,20 +82,6 @@ public abstract class Node {
             return false;
         }
     }
-
-    protected void handleUDP(DataUnit dataUnit) {
-
-    }
-
-    protected void handleTCP(DataUnit dataUnit) {
-
-    }
-
-    protected void sendTCP(String destIP, int destPort, DataUnit dataUnit) {}
-
-    protected void establishTCP(String destIP, int destPort){}
-
-    protected void sendUDP(String destIP, int destPort, DataUnit dataUnit) {}
 
     @Override
     public String toString() {
