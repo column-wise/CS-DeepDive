@@ -1,5 +1,6 @@
 package Network.Node;
 
+import Network.Constants.HTTPMethodType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
@@ -78,6 +79,12 @@ public abstract class Node {
 
     }
 
+    protected void sendTCP(String destIP, int destPort, DataUnit dataUnit) {}
+
+    protected void establishTCP(String destIP, int destPort){}
+
+    protected void sendUDP(String destIP, int destPort, DataUnit dataUnit) {}
+
     @Override
     public String toString() {
         return getClass().getName() + " MAC: " + MACAddress + " ,IP Address: " + ipAddress;
@@ -93,5 +100,30 @@ public abstract class Node {
 
     public Subnet getSubnet() {
         return subnet;
+    }
+
+    public abstract static class Builder<T extends Builder<T>> {
+        protected String ipAddress;
+        protected String MACAddress;
+        protected Subnet subnet;
+
+        public T ip(String ip) {
+            this.ipAddress = ip;
+            return self();
+        }
+
+        public T mac(String mac) {
+            this.MACAddress = mac;
+            return self();
+        }
+
+        public T subnet(Subnet subnet) {
+            this.subnet = subnet;
+            return self();
+        }
+
+        protected abstract T self();
+
+        public abstract Node build();
     }
 }
