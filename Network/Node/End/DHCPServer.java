@@ -7,21 +7,25 @@ import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.Network.Subnet;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
-import Network.Node.UDPHandler;
+import Network.Node.UDPManager;
 import Network.Util.IPUtil;
 import Network.Util.PayloadParser;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class DHCPServer extends Node implements UDPHandler {
+public class DHCPServer extends Node {
 
     private final int intIpAddress;
     private final int startIP;
     private final int endIP;
     private final long LEASE_TIME = 60000;   // 60초 후 만료
     private final Map<Integer, Long> allocatedIP;
+
+    private final AtomicInteger portAllocator = new AtomicInteger(10000);
+    private final UDPManager udpManager = new UDPManager(() -> portAllocator.getAndIncrement(), datagram -> super.send(datagram));
 
     private DHCPServer(String MACAddress, String ipAddress, Subnet subnet) throws UnknownHostException {
         this.MACAddress = MACAddress;
@@ -65,7 +69,7 @@ public class DHCPServer extends Node implements UDPHandler {
     }
 
     @Override
-    public void sendUDP(String destIP, int destPort, DataUnit data) {
+    protected void handleTCP(DataUnit data) {
 
     }
 
