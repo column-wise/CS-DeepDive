@@ -9,14 +9,72 @@ public class TCPSegment implements TransportDataUnit {
 		this.payload = payload;
 	}
 
+	// SYN 플래그만 설정된 TCP 세그먼트를 만든다
+	public static TCPSegment syn(int sourcePort, int destPort, int sequenceNumber) {
+		TCPHeader hdr = TCPHeader.builder()
+				.sourcePort(sourcePort)
+				.destinationPort(destPort)
+				.sequenceNumber(sequenceNumber)
+				.acknowledgementNumber(0)
+				.dataOffset(5)       // 헤더 길이 (5 워드 = 20 bytes)
+				.flags(TCPHeader.FLAG_SYN)        // 제어 비트
+				.windowSize(65535)   // 예시 윈도우 크기
+				.checksum("0000")
+				.urgentPointer("0")
+				.options("")
+				.build();
+		return new TCPSegment(hdr, "");
+	}
+
+	// FIN 플래그만 설정된 TCP 세그먼트를 만든다
+	public static TCPSegment fin(int sourcePort, int destPort, int sequenceNumber, int acknowledgementNumber) {
+		TCPHeader hdr = TCPHeader.builder()
+				.sourcePort(sourcePort)
+				.destinationPort(destPort)
+				.sequenceNumber(sequenceNumber)
+				.acknowledgementNumber(acknowledgementNumber)
+				.dataOffset(5)
+				.flags(TCPHeader.FLAG_FIN)
+				.windowSize(65535)
+				.checksum("0000")
+				.urgentPointer("0")
+				.options("")
+				.build();
+		return new TCPSegment(hdr, "");
+	}
+
+	// ACK 플래그만 설정된 TCP 세그먼트를 만든다
+	public static TCPSegment ack(int sourcePort, int destPort, int sequenceNumber, int acknowledgementNumber) {
+		TCPHeader hdr = TCPHeader.builder()
+				.sourcePort(sourcePort)
+				.destinationPort(destPort)
+				.sequenceNumber(sequenceNumber)
+				.acknowledgementNumber(acknowledgementNumber)
+				.dataOffset(5)
+				.flags(TCPHeader.FLAG_ACK)
+				.windowSize(65535)
+				.checksum("0000")
+				.urgentPointer("0")
+				.options("")
+				.build();
+		return new TCPSegment(hdr, "");
+	}
+
 	public static class TCPHeader {
+		public static final int FLAG_FIN = 1 << 0;  // 000001
+		public static final int FLAG_SYN = 1 << 1;  // 000010
+		public static final int FLAG_RST = 1 << 2;  // 000100
+		public static final int FLAG_PSH = 1 << 3;  // 001000
+		public static final int FLAG_ACK = 1 << 4;  // 010000
+		public static final int FLAG_URG = 1 << 5;  // 100000
+
 		int sourcePort;
 		int destinationPort;
 		int sequenceNumber;
 		int acknowledgementNumber;
 		int dataOffset;
 		int reserved = 000;
-		String flags;
+		int flags;
 		int windowSize;
 		String checksum;
 		String urgentPointer;
@@ -28,7 +86,7 @@ public class TCPSegment implements TransportDataUnit {
 				int sequenceNumber,
 				int acknowledgementNumber,
 				int dataOffset,
-				String flags,
+				int flags,
 				int windowSize,
 				String checksum,
 				String urgentPointer,
@@ -46,6 +104,18 @@ public class TCPSegment implements TransportDataUnit {
 			this.options = options;
 		}
 
+		public boolean isSynAck() {
+			return isSyn() && isAck();
+		}
+
+		public boolean isSyn() {
+			return (flags & FLAG_SYN) != 0;
+		}
+
+		public boolean isAck() {
+			return (flags & FLAG_ACK) != 0;
+		}
+
 		public static Builder builder() {
 			return new Builder();
 		}
@@ -56,7 +126,7 @@ public class TCPSegment implements TransportDataUnit {
 			private int sequenceNumber;
 			private int acknowledgementNumber;
 			private int dataOffset;
-			private String flags;
+			private int flags;
 			private int windowSize;
 			private String checksum;
 			private String urgentPointer;
@@ -87,7 +157,7 @@ public class TCPSegment implements TransportDataUnit {
 				return this;
 			}
 
-			public Builder flags(String flags) {
+			public Builder flags(int flags) {
 				this.flags = flags;
 				return this;
 			}
