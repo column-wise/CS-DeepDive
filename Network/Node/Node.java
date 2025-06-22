@@ -1,6 +1,5 @@
 package Network.Node;
 
-import Network.Constants.HTTPMethodType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
@@ -44,18 +43,10 @@ public abstract class Node {
         // L4 계층: 프로토콜 분기
         switch (ipPacket.getProtocol()) {
             case 6 -> {
-                if (this instanceof TCPHandler tcpHandler) {
-                    tcpHandler.handleTCP(data);
-                } else {
-                    System.out.println("TCP not supported by this node");
-                }
+                handleTCP(data);
             }
             case 17 -> {
-                if (this instanceof UDPHandler udpHandler) {
-                    udpHandler.handleUDP(data);
-                } else {
-                    System.out.println("UDP not supported by this node");
-                }
+                handleUDP(data);
             }
             default -> System.out.println("Unknown protocol: " + ipPacket.getProtocol());
         }
@@ -71,6 +62,10 @@ public abstract class Node {
                 || isSubnetBroadcast(destIP);
     }
 
+    protected abstract void handleTCP(DataUnit data);
+
+    protected abstract void handleUDP(DataUnit data);
+
     private boolean isSubnetBroadcast(String destIP) {
         try {
             int dest = IPUtil.ipToInt(destIP);
@@ -81,6 +76,10 @@ public abstract class Node {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    protected void send(DataUnit data) {
+        subnet.send(data);
     }
 
     @Override
