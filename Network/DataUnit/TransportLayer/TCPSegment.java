@@ -1,5 +1,7 @@
 package Network.DataUnit.TransportLayer;
 
+import Network.DataUnit.DataUnit;
+
 public class TCPSegment implements TransportDataUnit {
 	private final TCPHeader tcpHeader;
 	private final String payload;
@@ -197,5 +199,9 @@ public class TCPSegment implements TransportDataUnit {
 				);
 			}
 		}
+	}
+
+	public TCPHeader getHeader() {
+		return tcpHeader;
 	}
 }
