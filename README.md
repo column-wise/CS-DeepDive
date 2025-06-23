@@ -18,8 +18,10 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                   | **NonLinear** |                                  | ✅ 완료    |
 |                   |               | **B-Tree**                       | ✅         |
 |                   |               | **Segment Tree**                 | ✅         |
-| **Algorithm**     | -             | **Dijkstra**                     | ☐ 예정     |
+| **Algorithm**     | **Shortest Path** | **Dijkstra**                     | ☐ 예정     |
 |                   |               | **BellmanFord**                  | ☐ 예정     |
+|                   |               | **A\***                  | ☐ 예정     |
+|                   | **Sorting**   |                  | ☐ 예정     |
 | **System**        | **JVM**       | **GarbageCollector**             | ☐ 예정     |
 |                   |               | ├─ G1                            | ☐          |
 |                   |               | └─ CMS                           | ☐          |
