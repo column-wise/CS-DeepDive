@@ -1,7 +1,5 @@
 package Network.DataUnit.TransportLayer;
 
-import Network.DataUnit.DataUnit;
-
 public class TCPSegment implements TransportDataUnit {
 	private final TCPHeader tcpHeader;
 	private final String payload;
@@ -62,6 +60,27 @@ public class TCPSegment implements TransportDataUnit {
 		return new TCPSegment(hdr, "");
 	}
 
+	// ACK 플래그만 설정된 TCP 세그먼트를 만든다
+	public static TCPSegment synAck(int sourcePort, int destPort, int sequenceNumber, int acknowledgementNumber) {
+		TCPHeader hdr = TCPHeader.builder()
+				.sourcePort(sourcePort)
+				.destinationPort(destPort)
+				.sequenceNumber(sequenceNumber)
+				.acknowledgementNumber(acknowledgementNumber)
+				.dataOffset(5)
+				.flags(TCPHeader.FLAG_SYN + TCPHeader.FLAG_ACK)
+				.windowSize(65535)
+				.checksum("0000")
+				.urgentPointer("0")
+				.options("")
+				.build();
+		return new TCPSegment(hdr, "");
+	}
+
+	public String getPayload() {
+		return payload;
+	}
+
 	public static class TCPHeader {
 		public static final int FLAG_FIN = 1 << 0;  // 000001
 		public static final int FLAG_SYN = 1 << 1;  // 000010
@@ -116,6 +135,18 @@ public class TCPSegment implements TransportDataUnit {
 
 		public boolean isAck() {
 			return (flags & FLAG_ACK) != 0;
+		}
+
+		public int getSourcePort() {
+			return sourcePort;
+		}
+
+		public int getDestinationPort() {
+			return destinationPort;
+		}
+
+		public int getSequenceNumber() {
+			return sequenceNumber;
 		}
 
 		public static Builder builder() {
