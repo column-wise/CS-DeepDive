@@ -17,9 +17,14 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Computer extends Node {
-	private final AtomicInteger portAllocator = new AtomicInteger(10000);
-	private TCPManager tcpManager = new TCPManager(() -> portAllocator.getAndIncrement(), (segment) -> super.send(segment));
-	private UDPManager udpManager = new UDPManager(() -> portAllocator.getAndIncrement(), (datagram) -> super.send(datagram));
+	// Ephemeral port (49152~65535)
+	private final AtomicInteger portAllocator = new AtomicInteger(49152);
+	private TCPManager tcpManager = new TCPManager(
+			() -> portAllocator.getAndUpdate(cur -> cur == 65535 ? 49152 : cur + 1),
+			(segment) -> super.send(segment));
+	private UDPManager udpManager = new UDPManager(
+			() -> portAllocator.getAndUpdate(cur -> cur == 65535 ? 49152 : cur + 1),
+			(datagram) -> super.send(datagram));
 
 	protected Computer(String MACAddress, String ipAddress, Subnet subnet) {
 		this.MACAddress = MACAddress;
@@ -30,7 +35,9 @@ public class Computer extends Node {
 	@Override
 	protected void handleTCP(DataUnit data) {
 		EthernetFrame ethernetFrame = (EthernetFrame) data;
-		tcpManager.onSegmentReceived((TCPSegment) ethernetFrame.getIPPacket().getTransportDataUnit());
+		IPPacket packet = ethernetFrame.getIPPacket();
+		String remoteIP = packet.getSourceIP();
+		tcpManager.onSegmentReceived(ipAddress, remoteIP, (TCPSegment) packet.getTransportDataUnit());
 	}
 
 	@Override
@@ -119,7 +126,10 @@ public class Computer extends Node {
 	}
 
 	public void sendHttpRequest(HTTPMethodType method, String url) {
-
+		// DNS 구현시 url -> ip 매핑 로직 추가되어야 함
+		String destinationIP = "128.119.40.186";
+		int destinationPort = 80;
+		tcpManager.sendSegment(ipAddress, destinationIP, destinationPort, url + method.toString());
 	}
 
 	public static Builder builder() {
