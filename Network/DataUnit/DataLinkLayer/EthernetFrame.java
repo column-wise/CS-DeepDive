@@ -41,4 +41,12 @@ public class EthernetFrame implements DataUnit {
     public IPPacket getIPPacket() {
         return ipPacket;
     }
+
+    public boolean isBroadcast() {
+        String destinationMAC = getDestinationMAC();
+        IPPacket ipPacket = getIPPacket();
+        String destinationIP = ipPacket.getDestinationIP();
+
+        return destinationMAC.equals("FF:FF:FF:FF:FF:FF") && destinationIP.equals("255.255.255.255");
+    }
 }

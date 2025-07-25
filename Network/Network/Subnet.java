@@ -59,7 +59,11 @@ public class Subnet {
 
         boolean delivered = false;
 
+        System.out.println("subnet received packet");
+        System.out.println("to " + destMAC + " " + destIP);
+
         for (Node node : nodes) {
+            System.out.println(node.toString());
             boolean match =
                     node.getIpAddress().equals(destIP) ||
                             node.getMACAddress().equals(destMAC) ||
