@@ -1,21 +1,19 @@
 package Network.Node;
 
-import Network.DataUnit.DataUnit;
-import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.DataUnit.TransportLayer.TCPSegment;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class TCPManager {
 	private final Map<String, TCPConnection> sessions = new HashMap<>();
 	private final Supplier<Integer> localPortAllocator;
-	private final Consumer<DataUnit> lowerSender;
+	private final BiConsumer<String, TCPSegment> lowerSender;
 
 	public TCPManager(Supplier<Integer> localPortAllocator,
-					  Consumer<DataUnit> lowerSender) {
+					  BiConsumer<String, TCPSegment> lowerSender) {
 		this.localPortAllocator = localPortAllocator;
 		this.lowerSender    = lowerSender;
 	}
@@ -29,12 +27,14 @@ public class TCPManager {
 		TCPConnection connection = sessions.get(sessionKey);
 
 		if (connection == null || connection.isClosed()) {
+			System.out.println("connection is not established...");
 			// 새 커넥션 생성 및 SYN 발송
 			connection = new TCPConnection(
 					sourcePort, destIP, destPort,
-					tcpSeg -> wrapAndSend(sourceIP, destIP, tcpSeg)
+					tcpSeg -> lowerSender.accept(destIP, tcpSeg)
 			);
 			sessions.put(sessionKey, connection);
+			System.out.println("sending syn request...");
 			connection.sendSyn();
 		}
 		else if (connection.getState() == TCPConnection.State.ESTABLISHED) {
@@ -51,7 +51,7 @@ public class TCPManager {
 		if (connection == null) {
 			connection = new TCPConnection(
 					localPort, remoteIP, remotePort,
-					tcpSeg -> wrapAndSend(localIP, remoteIP, tcpSeg)
+					tcpSeg -> lowerSender.accept(remoteIP, tcpSeg)
 			);
 			sessions.put(sessionKey, connection);
 		}
@@ -60,11 +60,5 @@ public class TCPManager {
 
 	private String key(int localPort, String destIP, int destPort) {
 		return localPort + "->" + destIP + ":" + destPort;
-	}
-
-	private void wrapAndSend(String localIP, String remoteIP, TCPSegment seg) {
-		// 1) IP 계층
-		IPPacket ip = new IPPacket(localIP, remoteIP, 6, seg);
-		lowerSender.accept(ip);
 	}
 }
