@@ -9,7 +9,7 @@ import Network.Util.IPUtil;
 public abstract class Node {
     protected String ipAddress;
     protected String MACAddress;
-    protected Subnet subnet;
+    protected NetworkInterface networkInterface;
 
     public void receive(DataUnit data) {
         // L2 계층: EthernetFrame 여부 파악 및 MAC 체크
@@ -69,8 +69,8 @@ public abstract class Node {
     private boolean isSubnetBroadcast(String destIP) {
         try {
             int dest = IPUtil.ipToInt(destIP);
-            int subnetAddr = subnet.getSubnetAddress();
-            int subnetMask = subnet.getSubnetMask();
+            int subnetAddr = networkInterface.getSubnet().getSubnetAddress();
+            int subnetMask = networkInterface.getSubnet().getSubnetMask();
             int broadcast = subnetAddr | (~subnetMask);
             return dest == broadcast;
         } catch (Exception e) {
@@ -79,12 +79,12 @@ public abstract class Node {
     }
 
     protected void send(DataUnit data) {
-        subnet.send(data);
+        networkInterface.getSubnet().send(data);
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + " MAC: " + MACAddress + " ,IP Address: " + ipAddress;
+        return getClass().getName() + " MAC: " + getMACAddress() + ", IP Address: " + getIpAddress();
     }
 
     public String getIpAddress() {
@@ -95,8 +95,8 @@ public abstract class Node {
         return MACAddress;
     }
 
-    public Subnet getSubnet() {
-        return subnet;
+    public NetworkInterface getNetworkInterface() {
+        return networkInterface;
     }
 
     public abstract static class Builder<T extends Builder<T>> {
