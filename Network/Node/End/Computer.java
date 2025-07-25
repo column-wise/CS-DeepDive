@@ -7,6 +7,8 @@ import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.DataUnit.TransportLayer.TCPSegment;
 import Network.Network.Subnet;
+import Network.Node.IPManager;
+import Network.Node.NetworkInterface;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
 import Network.Node.TCPManager;
@@ -17,19 +19,37 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Computer extends Node {
+	private final IPManager ipManager = new IPManager(this::sendEthernetFrame);
+
 	// Ephemeral port (49152~65535)
 	private final AtomicInteger portAllocator = new AtomicInteger(49152);
-	private TCPManager tcpManager = new TCPManager(
+	private final TCPManager tcpManager = new TCPManager(
 			() -> portAllocator.getAndUpdate(cur -> cur == 65535 ? 49152 : cur + 1),
-			(segment) -> super.send(segment));
-	private UDPManager udpManager = new UDPManager(
+			(destinationIP, segment) -> ipManager.sendIPPacket(destinationIP, segment));
+	private final UDPManager udpManager = new UDPManager(
 			() -> portAllocator.getAndUpdate(cur -> cur == 65535 ? 49152 : cur + 1),
-			(datagram) -> super.send(datagram));
+			(destinationIP, datagram) -> ipManager.sendIPPacket(destinationIP, datagram));
 
 	protected Computer(String MACAddress, String ipAddress, Subnet subnet) {
 		this.MACAddress = MACAddress;
 		this.ipAddress = ipAddress;
-		this.subnet = subnet;
+		networkInterface = new NetworkInterface(subnet);
+	}
+
+	protected void sendEthernetFrame(IPPacket packet) {
+		String dstMAC = getDestinationMAC(packet.getDestinationIP());
+		EthernetFrame frame = new EthernetFrame(
+				dstMAC,
+				this.MACAddress,
+				0x0800,     // EtherType: IPv4
+				packet
+		);
+		super.send(frame);
+	}
+
+	// todo. ARP로 목적지 MAC 주소 얻어오는 로직 추가
+	private String getDestinationMAC(String destinationIP) {
+		return "";
 	}
 
 	@Override
@@ -96,7 +116,7 @@ public class Computer extends Node {
 		IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
 		EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-		subnet.broadcast(frame, this);
+		networkInterface.getSubnet().broadcast(frame, this);
 	}
 
 	private void requestDHCP(String myIP) {
@@ -122,13 +142,15 @@ public class Computer extends Node {
 		IPPacket ipPacket = new IPPacket("0.0.0.0", "255.255.255.255", 17, udpDatagram);
 		EthernetFrame frame = new EthernetFrame("FF:FF:FF:FF:FF:FF", MACAddress, 0x0800, ipPacket);
 
-		subnet.broadcast(frame, this);
+		networkInterface.getSubnet().broadcast(frame, this);
 	}
 
 	public void sendHttpRequest(HTTPMethodType method, String url) {
 		// DNS 구현시 url -> ip 매핑 로직 추가되어야 함
 		String destinationIP = "128.119.40.186";
 		int destinationPort = 80;
+		System.out.println(this.toString());
+		System.out.println("sending HTTP Request...");
 		tcpManager.sendSegment(ipAddress, destinationIP, destinationPort, url + method.toString());
 	}
 

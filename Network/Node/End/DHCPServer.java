@@ -5,6 +5,8 @@ import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.Network.Subnet;
+import Network.Node.IPManager;
+import Network.Node.NetworkInterface;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
 import Network.Node.UDPManager;
@@ -17,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DHCPServer extends Node {
-
+    private final IPManager ipManager = new IPManager(this::sendEthernetFrame);
     private final int intIpAddress;
     private final int startIP;
     private final int endIP;
@@ -25,12 +27,14 @@ public class DHCPServer extends Node {
     private final Map<Integer, Long> allocatedIP;
 
     private final AtomicInteger portAllocator = new AtomicInteger(10000);
-    private final UDPManager udpManager = new UDPManager(() -> portAllocator.getAndIncrement(), datagram -> super.send(datagram));
+    private final UDPManager udpManager = new UDPManager(
+            () -> portAllocator.getAndIncrement(),
+            (destinationIP, datagram) -> super.send(datagram));
 
     private DHCPServer(String MACAddress, String ipAddress, Subnet subnet) throws UnknownHostException {
         this.MACAddress = MACAddress;
         this.ipAddress = ipAddress;
-        this.subnet = subnet;
+        networkInterface = new NetworkInterface(subnet);
         intIpAddress = IPUtil.ipToInt(ipAddress);
         startIP = subnet.getSubnetAddress() + 2;   // + 1은 router 용도로
         endIP = (subnet.getSubnetAddress() | (~subnet.getSubnetMask())) - 1;
@@ -100,13 +104,24 @@ public class DHCPServer extends Node {
         }
     }
 
+    protected void sendEthernetFrame(IPPacket packet) {
+        String dstMAC = null;
+        EthernetFrame frame = new EthernetFrame(
+                dstMAC,
+                this.MACAddress,
+                0x0800,     // EtherType: IPv4
+                packet
+        );
+        super.send(frame);
+    }
+
     // todo. DNS 구현 시 DNS 주소 추가
     private void offerDHCP(Map<String, String> receivedPayload) {
         String clientMAC = receivedPayload.get("Client MAC");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + IPUtil.intToIp(findAllocatableIP()) +
-                ",Subnet Mask=" + IPUtil.intToIp(subnet.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(subnet.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPOFFER +
@@ -122,7 +137,7 @@ public class DHCPServer extends Node {
         UDPDatagram datagram = new UDPDatagram(header, payload);
         IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 17, datagram);
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
-        subnet.broadcast(frame, this);
+        networkInterface.getSubnet().broadcast(frame, this);
     }
 
     private void ackDHCP(Map<String, String> receivedPayload) {
@@ -131,8 +146,8 @@ public class DHCPServer extends Node {
         String yourIP = receivedPayload.get("Requested IP Address");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + yourIP +
-                ",Subnet Mask=" + IPUtil.intToIp(subnet.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(subnet.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPACK +
@@ -149,7 +164,7 @@ public class DHCPServer extends Node {
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
 
         if(flags.equals("1")) {
-            subnet.broadcast(frame, this);
+            networkInterface.getSubnet().broadcast(frame, this);
         } else if(flags.equals("0")) {
             // unicast
         }
