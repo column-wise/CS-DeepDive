@@ -20,7 +20,8 @@ public class Router extends Node {
 
 	public void addInterface(Interface iface) {
 		interfaces.add(iface);
-		if(iface.type == Interface.Type.PRIVATE && externalIP == null) externalIP = iface.ipAddress;
+		if(iface.type == Interface.Type.PUBLIC && externalIP == null) externalIP = iface.ipAddress;
+		if(iface.type == Interface.Type.PRIVATE) ipAddress = iface.ipAddress;
 	}
 
 	public Router() {

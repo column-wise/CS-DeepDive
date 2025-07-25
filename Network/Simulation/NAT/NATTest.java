@@ -57,6 +57,7 @@ public class NATTest {
 						.mac("AA:22:33:44:55:66")
 						.ip("138.76.29.7")
 						.connectedSubnet(publicNetwork)
+						.type(Router.Interface.Type.PUBLIC)
 						.build()
 		);
 
