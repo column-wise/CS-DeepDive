@@ -72,6 +72,7 @@ public class TCPConnection {
 					ackNum = header.getSequenceNumber() + 1;
 					sendAck();
 					state = State.ESTABLISHED;
+					System.out.println("TCP connection established...");
 					if (pendingSegment != null) {
 						sender.accept(pendingSegment);
 						pendingSegment = null;
@@ -88,6 +89,7 @@ public class TCPConnection {
 			case SYN_RECEIVED:
 				if (header.isAck()) {
 					state = State.ESTABLISHED;
+					System.out.println("TCP connection established...");
 					if (pendingSegment != null) {
 						sender.accept(pendingSegment);  // 연결되자마자 전송
 						pendingSegment = null;
