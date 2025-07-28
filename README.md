@@ -38,6 +38,8 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                    |                      | └─ Acknowledge (ACK)                   | ✅       |
 |                    |                      | **TCP (3-way, 4-way handshaking)**     | 🔧       |
 |                    |                      | **NAT**                                | 🔧       |
+|                    |                      | **ARP**                                | ☐ 예정  |
+|                    |                      | **DNS**                                | ☐ 예정  |
 | **Security**       | -                    | **RSA**                                | ☐ 예정  |
 |                    |                      | **DiffieHellman**                      | ☐ 예정  |
 |                    |                      | **AES**                                | ☐ 예정  |
