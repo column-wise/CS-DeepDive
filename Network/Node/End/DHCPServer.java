@@ -4,31 +4,40 @@ import Network.Constants.DHCPMessageType;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
-import Network.Network.Network;
+import Network.Network.Subnet;
+import Network.Node.IPManager;
+import Network.Node.NetworkInterface;
 import Network.Node.Node;
 import Network.DataUnit.TransportLayer.UDPDatagram;
+import Network.Node.UDPManager;
 import Network.Util.IPUtil;
 import Network.Util.PayloadParser;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DHCPServer extends Node {
-
+    private final IPManager ipManager = new IPManager(this::sendEthernetFrame);
     private final int intIpAddress;
     private final int startIP;
     private final int endIP;
     private final long LEASE_TIME = 60000;   // 60초 후 만료
     private final Map<Integer, Long> allocatedIP;
 
-    private DHCPServer(String MACAddress, String ipAddress, Network network) throws UnknownHostException {
+    private final AtomicInteger portAllocator = new AtomicInteger(10000);
+    private final UDPManager udpManager = new UDPManager(
+            () -> portAllocator.getAndIncrement(),
+            (destinationIP, datagram) -> super.send(datagram));
+
+    private DHCPServer(String MACAddress, String ipAddress, Subnet subnet) throws UnknownHostException {
         this.MACAddress = MACAddress;
         this.ipAddress = ipAddress;
-        this.network = network;
+        networkInterface = new NetworkInterface(subnet);
         intIpAddress = IPUtil.ipToInt(ipAddress);
-        startIP = network.getSubnetAddress() + 2;   // + 1은 router 용도로
-        endIP = (network.getSubnetAddress() | (~network.getSubnetMask())) - 1;
+        startIP = subnet.getSubnetAddress() + 2;   // + 1은 router 용도로
+        endIP = (subnet.getSubnetAddress() | (~subnet.getSubnetMask())) - 1;
         allocatedIP = new HashMap<>();
     }
 
@@ -64,7 +73,12 @@ public class DHCPServer extends Node {
     }
 
     @Override
-    protected void handleUDP(DataUnit dataUnit) {
+    protected void handleTCP(DataUnit data) {
+
+    }
+
+    @Override
+    public void handleUDP(DataUnit dataUnit) {
         EthernetFrame frame = (EthernetFrame) dataUnit;
         String destinationMAC = frame.getDestinationMAC();
         String sourceMAC = frame.getSourceMAC();
@@ -90,13 +104,24 @@ public class DHCPServer extends Node {
         }
     }
 
+    protected void sendEthernetFrame(IPPacket packet) {
+        String dstMAC = null;
+        EthernetFrame frame = new EthernetFrame(
+                dstMAC,
+                this.MACAddress,
+                0x0800,     // EtherType: IPv4
+                packet
+        );
+        super.send(frame);
+    }
+
     // todo. DNS 구현 시 DNS 주소 추가
     private void offerDHCP(Map<String, String> receivedPayload) {
         String clientMAC = receivedPayload.get("Client MAC");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + IPUtil.intToIp(findAllocatableIP()) +
-                ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPOFFER +
@@ -112,7 +137,7 @@ public class DHCPServer extends Node {
         UDPDatagram datagram = new UDPDatagram(header, payload);
         IPPacket ipPacket = new IPPacket(ipAddress, "255.255.255.255", 17, datagram);
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
-        network.broadcast(frame, this);
+        networkInterface.getSubnet().broadcast(frame, this);
     }
 
     private void ackDHCP(Map<String, String> receivedPayload) {
@@ -121,8 +146,8 @@ public class DHCPServer extends Node {
         String yourIP = receivedPayload.get("Requested IP Address");
         String payload = "Client MAC=" + clientMAC +
                 ",Your IP=" + yourIP +
-                ",Subnet Mask=" + IPUtil.intToIp(network.getSubnetMask()) +
-                ",Router=" + IPUtil.intToIp(network.getSubnetAddress()+1) +
+                ",Subnet Mask=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetMask()) +
+                ",Router=" + IPUtil.intToIp(networkInterface.getSubnet().getSubnetAddress()+1) +
                 ",DNS=" + "DNS 서버 IP 주소" +
                 ",IP Lease Time=" + LEASE_TIME +
                 ",DHCP Message Type=" + DHCPMessageType.DHCPACK +
@@ -139,7 +164,7 @@ public class DHCPServer extends Node {
         EthernetFrame frame = new EthernetFrame(clientMAC, MACAddress, 0x0800, ipPacket);
 
         if(flags.equals("1")) {
-            network.broadcast(frame, this);
+            networkInterface.getSubnet().broadcast(frame, this);
         } else if(flags.equals("0")) {
             // unicast
         }
@@ -152,7 +177,7 @@ public class DHCPServer extends Node {
     public static class Builder {
         private String MACAddress;
         private String ipAddress;
-        private Network network;
+        private Subnet subnet;
 
         public Builder ip(String ip) {
             this.ipAddress = ip;
@@ -164,14 +189,14 @@ public class DHCPServer extends Node {
             return this;
         }
 
-        public Builder network(Network network) {
-            this.network = network;
+        public Builder subnet(Subnet subnet) {
+            this.subnet = subnet;
             return this;
         }
 
         public DHCPServer build() {
             try {
-                return new DHCPServer(MACAddress, ipAddress, network);
+                return new DHCPServer(MACAddress, ipAddress, subnet);
             } catch (UnknownHostException e) {
                 throw new RuntimeException("Invalid IP Address: " + ipAddress, e);
             }

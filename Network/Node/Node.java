@@ -3,37 +3,51 @@ package Network.Node;
 import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
 import Network.DataUnit.NetworkLayer.IPPacket;
-import Network.DataUnit.TransportLayer.TransportDataUnit;
-import Network.Network.Network;
+import Network.Network.Subnet;
 import Network.Util.IPUtil;
 
 public abstract class Node {
     protected String ipAddress;
     protected String MACAddress;
-    protected Network network;
+    protected NetworkInterface networkInterface;
 
     public void receive(DataUnit data) {
-        System.out.println(getClass().getName() + " " + ipAddress + " received\n" + data + "\n");
-
+        // L2 계층: EthernetFrame 여부 파악 및 MAC 체크
         IPPacket ipPacket = null;
+        boolean destinedToMe = false;
 
-        // L2 계층: EthernetFrame 처리
         if (data instanceof EthernetFrame frame) {
-            if (!isDestinedToMeMAC(frame.getDestinationMAC())) return;
-            ipPacket = frame.getIPPacket();
+            destinedToMe = isDestinedToMeMAC(frame.getDestinationMAC());
+            if (destinedToMe) {
+                ipPacket = frame.getIPPacket();
+                // L3 IP 체크
+                destinedToMe = isDestinedToMeIP(ipPacket.getDestinationIP());
+            }
         } else if (data instanceof IPPacket packet) {
-            ipPacket = packet;
-        } else {
+            destinedToMe = isDestinedToMeIP(packet.getDestinationIP());
+            if (destinedToMe) {
+                ipPacket = packet;
+            }
+        }
+
+        // 간단 로그: 일단 받은 사실만 찍고, 대상 아니면 리턴
+        System.out.println(getClass().getName() + " " + ipAddress + " received a packet"
+                + (destinedToMe ? "" : " (not for me)") + ".\n");
+        if (!destinedToMe) {
             return;
         }
 
-        // L3 계층: IP 확인
-        if (!isDestinedToMeIP(ipPacket.getDestinationIP())) return;
+        // 상세 로그: 실제 나에게 온 패킷만 data 내용까지 출력
+        System.out.println(data + "\n");
 
         // L4 계층: 프로토콜 분기
         switch (ipPacket.getProtocol()) {
-            case 6 -> handleTCP(data);
-            case 17 -> handleUDP(data);
+            case 6 -> {
+                handleTCP(data);
+            }
+            case 17 -> {
+                handleUDP(data);
+            }
             default -> System.out.println("Unknown protocol: " + ipPacket.getProtocol());
         }
     }
@@ -48,11 +62,15 @@ public abstract class Node {
                 || isSubnetBroadcast(destIP);
     }
 
+    protected abstract void handleTCP(DataUnit data);
+
+    protected abstract void handleUDP(DataUnit data);
+
     private boolean isSubnetBroadcast(String destIP) {
         try {
             int dest = IPUtil.ipToInt(destIP);
-            int subnetAddr = network.getSubnetAddress();
-            int subnetMask = network.getSubnetMask();
+            int subnetAddr = networkInterface.getSubnet().getSubnetAddress();
+            int subnetMask = networkInterface.getSubnet().getSubnetMask();
             int broadcast = subnetAddr | (~subnetMask);
             return dest == broadcast;
         } catch (Exception e) {
@@ -60,16 +78,49 @@ public abstract class Node {
         }
     }
 
-    protected void handleUDP(DataUnit dataUnit) {
-
-    }
-
-    protected void handleTCP(DataUnit dataUnit) {
-
+    protected void send(DataUnit data) {
+        networkInterface.getSubnet().send(data);
     }
 
     @Override
     public String toString() {
-        return getClass().getName() + " MAC: " + MACAddress + " ,IP Address: " + ipAddress;
+        return getClass().getName() + " MAC: " + getMACAddress() + ", IP Address: " + getIpAddress();
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public String getMACAddress() {
+        return MACAddress;
+    }
+
+    public NetworkInterface getNetworkInterface() {
+        return networkInterface;
+    }
+
+    public abstract static class Builder<T extends Builder<T>> {
+        protected String ipAddress;
+        protected String MACAddress;
+        protected Subnet subnet;
+
+        public T ip(String ip) {
+            this.ipAddress = ip;
+            return self();
+        }
+
+        public T mac(String mac) {
+            this.MACAddress = mac;
+            return self();
+        }
+
+        public T subnet(Subnet subnet) {
+            this.subnet = subnet;
+            return self();
+        }
+
+        protected abstract T self();
+
+        public abstract Node build();
     }
 }
