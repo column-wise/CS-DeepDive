@@ -10,5 +10,6 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+    create_tests: false  # 테스트 코드 생성 방지
 chat:
   auto_reply: true
