@@ -1,6 +1,8 @@
 package Network.Node.Core;
 
+import Network.DataUnit.DataLinkLayer.EthernetFrame;
 import Network.DataUnit.DataUnit;
+import Network.DataUnit.NetworkLayer.IPPacket;
 import Network.Network.Subnet;
 import Network.Node.Node;
 
@@ -42,6 +44,46 @@ public class Router extends Node {
 	@Override
 	protected void handleUDP(DataUnit data) {
 
+	}
+
+	public void forward(DataUnit data) {
+		EthernetFrame frame = (EthernetFrame) data;
+		IPPacket packet = frame.getIPPacket();
+		String destIP = packet.getDestinationIP();
+		
+		System.out.println("[Router] Forwarding packet to destination: " + destIP);
+
+		// TODO: Implement proper routing table with longest prefix matching
+		// For now, simple forwarding logic:
+		// 1. Check if destination is in any connected subnet
+		// 2. If not found, forward to PUBLIC interface (default route)
+		
+		for(Interface iface : interfaces) {
+			// Check if destination is in this interface's subnet
+			if(isDestinationInSubnet(destIP, iface)) {
+				System.out.println("[Router] Found destination in connected subnet via " + iface.type + " interface (" + iface.ipAddress + ")");
+				iface.connectedSubnet.send(data);
+				return;
+			}
+		}
+		
+		// Not found in any connected subnet, use default route (PUBLIC interface)
+		System.out.println("[Router] Destination not in connected subnets, using default route");
+		for(Interface iface : interfaces) {
+			if(iface.type == Interface.Type.PUBLIC) {
+				System.out.println("[Router] Forwarding via PUBLIC interface (" + iface.ipAddress + ") to external network");
+				iface.connectedSubnet.send(data);
+				return;
+			}
+		}
+		
+		System.out.println("[Router] ERROR: No PUBLIC interface available for default route");
+	}
+	
+	private boolean isDestinationInSubnet(String destIP, Interface iface) {
+		// TODO: Implement proper subnet matching with CIDR
+		// For now, simplified check
+		return false; // Placeholder
 	}
 
 	public static class Interface {
