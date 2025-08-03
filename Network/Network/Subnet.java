@@ -59,11 +59,11 @@ public class Subnet {
 
         boolean delivered = false;
 
-        System.out.println("subnet received packet");
-        System.out.println("to " + destMAC + " " + destIP);
+        System.out.println("[Subnet] Received packet for delivery");
+        System.out.println("[Subnet] Destination: MAC=" + destMAC + " IP=" + destIP);
 
         for (Node node : nodes) {
-            System.out.println(node.toString());
+            System.out.println("[Subnet] Checking node: " + node.toString());
             boolean match =
                     node.getIpAddress().equals(destIP) ||
                             node.getMACAddress().equals(destMAC) ||
@@ -71,13 +71,18 @@ public class Subnet {
                             "255.255.255.255".equals(destIP);
 
             if (match) {
+                System.out.println("[Subnet] Match found! Delivering to node: " + node.toString());
                 node.receive(data);
                 delivered = true;
             }
         }
 
         if(!delivered && gateway != null) {
-            System.out.println("can't find destination in private network");
+            System.out.println("[Subnet] Destination not found in local subnet, forwarding to gateway");
+            System.out.println("[Subnet] Gateway: " + gateway.toString());
+            gateway.forward(data);
+        } else if(!delivered) {
+            System.out.println("[Subnet] ERROR: Destination not found and no gateway configured");
         }
     }
 
