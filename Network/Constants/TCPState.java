@@ -1,4 +1,6 @@
 package Network.Constants;
+// Comprehensive unit tests available in TCPStateTest.java
+// Tests cover: enum properties, valueOf validation, state transitions, serialization, and more
 
 import Network.DataUnit.DataUnit;
 
