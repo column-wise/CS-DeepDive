@@ -9,29 +9,30 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 
 | 대분류             | 소분류              | 구현 항목/파일                         | 상태     |
 |--------------------|----------------------|----------------------------------------|----------|
-| **DataStructure**  | **Linear**           |                                        | ✅ 완료  |
-|                    |                      | **LinkedList**                         | ✅ 완료  |
+| **DataStructure**  | **Linear**           |                                        |          |
+|                    |                      | **LinkedList**                         |          |
 |                    |                      | ├─ CircularDoublyLinkedList.java       | ✅       |
 |                    |                      | ├─ DoublyLinkedList.java               | ✅       |
 |                    |                      | ├─ DummyNodeLinkedList.java            | ✅       |
 |                    |                      | └─ SimpleLinkedList.java               | ✅       |
-|                    |                      | **Stack**                              | ✅ 완료  |
+|                    |                      | **Stack**                              |          |
 |                    |                      | ├─ ArrayStack.java                     | ✅       |
 |                    |                      | └─ LinkedListStack.java                | ✅       |
-|                    | **NonLinear**        |                                        | ✅ 완료  |
+|                    | **NonLinear**        |                                        |          |
 |                    |                      | **B-Tree**                             | ✅       |
 |                    |                      | **Segment Tree**                       | ✅       |
-|                    |                      | **Hash Table**                         | ☐ 예정  |
-| **Algorithm**      | **Shortest Path**    | **Dijkstra**                           | ☐ 예정  |
-|                    |                      | **BellmanFord**                        | ☐ 예정  |
-|                    |                      | **A\***                                | ☐ 예정  |
-|                    | **Sorting**          |                                        | ☐ 예정  |
-| **System**         | **JVM**              | **GarbageCollector**                   | ☐ 예정  |
-|                    |                      | ├─ G1                                  | ☐       |
-|                    |                      | └─ CMS                                 | ☐       |
-|                    | **OS**               | **Process Schedule**                   | ☐ 예정  |
-|                    |                      | ├─ Round-Robin                         | ☐ 예정  |
-|                    |                      | └─ MLFQ                                | ☐ 예정  |
+|                    |                      | **Hash Table**                         | ☐ 예정    |
+| **Algorithm**      | **Shortest Path**    |                                        |          |
+|                    |                      | **Dijkstra**                           | ☐ 예정    |
+|                    |                      | **BellmanFord**                        | ☐ 예정    |
+|                    |                      | **A\***                                | ☐ 예정    |
+|                    | **Sorting**          |                                        | ☐ 예정    |
+| **System**         | **JVM**              | **GarbageCollector**                   |          |
+|                    |                      | ├─ G1                                  | ☐ 예정    |
+|                    |                      | └─ CMS                                 | ☐ 예정    |
+|                    | **OS**               | **Process Schedule**                   |          |
+|                    |                      | ├─ Round-Robin                         | ☐ 예정    |
+|                    |                      | └─ MLFQ                                | ☐ 예정    |
 | **Network**        | -                    | **DHCP**                               | ✅       |
 |                    |                      | ├─ Discover                            | ✅       |
 |                    |                      | ├─ Offer                               | ✅       |
@@ -39,12 +40,14 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                    |                      | └─ Acknowledge (ACK)                   | ✅       |
 |                    |                      | **TCP (3-way, 4-way handshaking)**     | ✅       |
 |                    |                      | **NAT**                                | ✅       |
-|                    |                      | **ARP**                                | ☐ 예정  |
-|                    |                      | **DNS**                                | ☐ 예정  |
-| **Security**       | -                    | **RSA**                                | ☐ 예정  |
-|                    |                      | **DiffieHellman**                      | ☐ 예정  |
-|                    |                      | **AES**                                | ☐ 예정  |
-| **GameTheory**     | -                    | **Tit-for-Tat**                        | ☐ 예정  |
+|                    |                      | **ARP**                                | ☐ 예정    |
+|                    |                      | **DNS**                                | ☐ 예정    |
+| **Security**       | -                    |                                        |          |
+|                    |                      | **RSA**                                | ☐ 예정    |
+|                    |                      | **DiffieHellman**                      | ☐ 예정    |
+|                    |                      | **AES**                                | ☐ 예정    |
+| **GameTheory**     | -                    |                                        |          |
+|                    |                      | **Tit-for-Tat**                        | ☐ 예정    |
 
 
 ## 🛠️ 목표
