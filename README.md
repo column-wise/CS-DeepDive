@@ -1,6 +1,7 @@
-# CS DeepDive
+# CS DeepDive  
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/column-wise/CS-DeepDive?utm_source=oss&utm_medium=github&utm_campaign=column-wise%2FCS-DeepDive&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)  
 
-Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 프로젝트입니다.  
+Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 개인 프로젝트입니다.  
 자료구조, 알고리즘, 운영체제, 네트워크, 보안, 게임이론 등 전산학 전반에 걸친 주제를 코드로 표현하며 내부 동작 원리를 심도 있게 이해하고자 합니다.
 
 
@@ -36,8 +37,8 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                    |                      | ├─ Offer                               | ✅       |
 |                    |                      | ├─ Request                             | ✅       |
 |                    |                      | └─ Acknowledge (ACK)                   | ✅       |
-|                    |                      | **TCP (3-way, 4-way handshaking)**     | 🔧       |
-|                    |                      | **NAT**                                | 🔧       |
+|                    |                      | **TCP (3-way, 4-way handshaking)**     | ✅       |
+|                    |                      | **NAT**                                | ✅       |
 |                    |                      | **ARP**                                | ☐ 예정  |
 |                    |                      | **DNS**                                | ☐ 예정  |
 | **Security**       | -                    | **RSA**                                | ☐ 예정  |
