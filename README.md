@@ -26,7 +26,8 @@ Java 기반으로 컴퓨터공학 핵심 개념을 직접 구현한 학습형 �
 |                    |                      | **Dijkstra**                           | ☐ 예정    |
 |                    |                      | **BellmanFord**                        | ☐ 예정    |
 |                    |                      | **A\***                                | ☐ 예정    |
-|                    | **Sorting**          |                                        | ☐ 예정    |
+|                    | **Sorting**          |                                        |          |
+|                    |                      | **Quick Sort**                         | ✅       |
 | **System**         | **JVM**              | **GarbageCollector**                   |          |
 |                    |                      | ├─ G1                                  | ☐ 예정    |
 |                    |                      | └─ CMS                                 | ☐ 예정    |
