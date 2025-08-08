@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class QuickSort {
-	public static void QuickSort(int[] arr, int start, int end) {
+	public static void quickSort(int[] arr, int start, int end) {
 		if(start >= end) return;
 
 		int pivotIndex = partition(arr, start, end);
-		QuickSort(arr, start, pivotIndex - 1);
-		QuickSort(arr, pivotIndex + 1, end);
+		quickSort(arr, start, pivotIndex - 1);
+		quickSort(arr, pivotIndex + 1, end);
 	}
 
 	private static int partition(int[] arr, int start, int end) {
@@ -55,7 +55,7 @@ public class QuickSort {
 		}
 
 		System.out.println("Original Array: " + Arrays.toString(arr));
-		QuickSort(arr, 0, N - 1);
+		quickSort(arr, 0, N - 1);
 		System.out.println("Sorted Array: " + Arrays.toString(arr));
 	}
 }
